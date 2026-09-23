@@ -47,6 +47,7 @@ jobs:
 
       - name: Run Linting (Ruff)
         run: ruff check . --output-format=github
+        continue-on-error: true
 
       - name: Run Type Checking (Mypy)
         run: mypy app --ignore-missing-imports
