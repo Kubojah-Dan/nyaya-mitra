@@ -1,7 +1,21 @@
-from fastapi import APIRouter, Query
+"""
+NyayaMitra Legal Corpus, Citation Verification & Structural Parsing Router
+Public contract for querying verified Tier-1 enactments, pinpoint statutory sections,
+cross-mapping outdated provisions (IPC/CrPC/IEA -> BNS/BNSS/BSA), and parsing raw
+legal sections into structured schema.
+
+Endpoints:
+- GET  /api/v1/corpus/search: Hybrid BM25 keyword and pinpoint statutory section search.
+- GET  /api/v1/corpus/verify-citation: Verifies existence and validity of cited sections.
+- GET  /api/v1/corpus/transition-map: Maps historical provisions to 2024 active enactments.
+- POST /api/v1/corpus/parse-section: Parses raw legal text into structured section schema.
+"""
+
+from fastapi import APIRouter, Body, Query
 from starlette.responses import JSONResponse
 
 from app.services.citation_verifier import CitationVerifier
+from app.services.corpus_parser import LegalCorpusParser
 from app.services.retrieval import LegalRetrievalEngine
 from app.services.transition_mapping import TransitionMappingService
 
@@ -42,3 +56,14 @@ async def get_transition_map(
     if not mapped:
         return JSONResponse({"found": False, "message": f"No statutory transition mapping for {act} Section {section}"})
     return JSONResponse({"found": True, "mapping": mapped})
+
+
+@router.post("/parse-section")
+async def parse_section(
+    raw_text: str = Body(..., embed=True, description="Raw statutory section text"),
+    act_code: str = Body("CUSTOM", embed=True, description="Act code identifier"),
+) -> JSONResponse:
+    """Parse raw section string into structured statutory attributes (subsections, cognizable, bailable)."""
+    parsed = LegalCorpusParser.parse_section(raw_text, act_code)
+    return JSONResponse(parsed)
+

@@ -27,23 +27,33 @@ class Settings(BaseSettings):
 
     # Cache & Rate Limiting
     REDIS_URL: str = "redis://localhost:6379/0"
+    CACHE_TTL_SECONDS: int = 3600
     RATE_LIMIT_PER_MINUTE: int = 60
 
     # Privacy & Safety
     ENABLE_PII_REDACTION: bool = True
+    STORAGE_DRIVER: str = "local"
     UPLOAD_DIR: str = "./uploads"
     MAX_UPLOAD_SIZE_MB: int = 10
     FILE_RETENTION_HOURS: int = 24
 
     # AI & Providers
-    LLM_PROVIDER: str = "mock"
+    LLM_PROVIDER: str = "gemini"
     PRIMARY_MODEL: str = "gemini-2.0-flash"
     FALLBACK_MODEL: str = "llama3-70b-8192"  # Groq-hosted fallback
     FAST_MODEL: str = "gemini-2.0-flash-lite"
     GEMINI_API_KEY: str = ""
     GROQ_API_KEY: str = ""
     EMBEDDING_PROVIDER: str = "mock"
+    EMBEDDING_MODEL: str = "sentence-transformers/all-MiniLM-L6-v2"
+    EMBEDDING_DIMENSIONS: int = 384
     OCR_PROVIDER: str = "mock"
+
+    # External Legal Source Adapters
+    INDIA_CODE_BASE_URL: str = "https://www.indiacode.nic.in"
+    ECOURTS_PORTAL_URL: str = "https://services.ecourts.gov.in"
+    NALSA_PORTAL_URL: str = "https://nalsa.gov.in"
+    TELE_LAW_URL: str = "https://www.tele-law.in"
 
     model_config = SettingsConfigDict(
         env_file=".env",

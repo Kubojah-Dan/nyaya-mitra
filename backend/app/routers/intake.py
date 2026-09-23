@@ -1,12 +1,27 @@
+"""
+NyayaMitra Guided Legal Intake & Rights Router
+Public contract for citizen multi-turn legal consultation, problem classification,
+voice-to-text intake, and verified statutory rights & limitation explanations.
+
+Endpoints:
+- POST /api/v1/intake/start: Initiates or resets an intake session.
+- POST /api/v1/intake/turn: Processes citizen conversational turns, extracting legal facts.
+- GET  /api/v1/intake/state/{session_id}: Retrieves current session state and collected facts.
+- POST /api/v1/intake/classify: Standalone single-turn legal domain classification.
+- POST /api/v1/intake/rights: Generates 'Mere Adhikaar' verified statutory rights and deadlines.
+- POST /api/v1/intake/voice: Transcribes citizen voice audio streams into text.
+"""
+
 from typing import Any, Optional
 
-from fastapi import APIRouter, Body, HTTPException
+from fastapi import APIRouter, Body, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel
 from starlette.responses import JSONResponse
 
 from app.services.domain_classifier import classify_domain
 from app.services.intake_engine import GuidedIntakeEngine, IntakeStage
 from app.services.rights_engine import RightsExplanationEngine
+from app.services.voice_input import MockVoiceInputAdapter, TextFallbackAdapter
 
 router = APIRouter(prefix="/intake", tags=["Guided Intake — Samjho Mera Problem"])
 
@@ -117,3 +132,33 @@ async def get_rights_explanation(request: RightsRequest) -> JSONResponse:
     )
 
     return JSONResponse(response.model_dump())
+
+
+@router.post("/voice")
+async def transcribe_voice(
+    file: Optional[UploadFile] = File(None),
+    language: str = Form("hi-IN"),
+    text_fallback: Optional[str] = Form(None),
+) -> JSONResponse:
+    """Transcribe citizen voice audio streams or fallback text into legal intake text."""
+    if file is not None:
+        audio_bytes = await file.read()
+        adapter = MockVoiceInputAdapter()
+        result = await adapter.transcribe(audio_bytes, language_hint=language)
+    elif text_fallback:
+        adapter = TextFallbackAdapter()
+        result = await adapter.transcribe(text_fallback.encode("utf-8"), language_hint=language)
+    else:
+        raise HTTPException(
+            status_code=400,
+            detail="Either an audio file or text_fallback must be provided for transcription.",
+        )
+
+    return JSONResponse({
+        "text": result.text,
+        "confidence": result.confidence,
+        "detected_language": result.detected_language,
+        "is_fallback": result.is_fallback,
+        "error": result.error,
+    })
+

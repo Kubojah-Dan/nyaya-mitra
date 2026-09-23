@@ -4,8 +4,19 @@
  * Zero mock data - fully connected to statutory microservices.
  */
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000/api/v1";
+const configuredApiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+export const API_BASE_URL =
+  configuredApiUrl ||
+  (process.env.NODE_ENV === "production" ? "" : "http://localhost:8000/api/v1");
+
+function checkApiConfig(): void {
+  if (!API_BASE_URL && typeof window !== "undefined" && process.env.NODE_ENV === "production") {
+    throw new Error(
+      "NEXT_PUBLIC_API_BASE_URL is not configured. Please configure the backend API URL in your deployment environment."
+    );
+  }
+}
 
 export interface IntakeTurnResponse {
   session_id: string;
@@ -265,6 +276,189 @@ export async function fetchLegalAidResources(
   if (!res.ok) {
     const errorBody = await res.text();
     throw new Error(`Resource directory error (${res.status}): ${errorBody}`);
+  }
+  return res.json();
+}
+
+export interface SectionDelta {
+  section_id: string;
+  section_a: string;
+  section_b: string;
+  delta_type: "ADDED" | "REMOVED" | "MODIFIED" | "UNCHANGED";
+  description: string;
+  text_a: string;
+  text_b: string;
+  citations: string[];
+}
+
+export interface DocumentCompareResponse {
+  success: boolean;
+  summary: string;
+  total_sections_a: number;
+  total_sections_b: number;
+  added_count: number;
+  removed_count: number;
+  modified_count: number;
+  unchanged_count: number;
+  deltas: SectionDelta[];
+  added_sections: string[];
+  removed_sections: string[];
+  modified_sections: string[];
+  citations: string[];
+  warnings: string[];
+  model_used: string;
+  tier: string;
+  fallback_used: boolean;
+  status: string;
+  compared_at: string;
+  disclaimer: string;
+}
+
+export interface OutlineSection {
+  section_id: string;
+  heading: string;
+  start_char: number;
+  end_char: number;
+  level: number;
+  summary: string;
+  children: OutlineSection[];
+}
+
+export interface DocumentOutlineResponse {
+  document_id?: string;
+  title: string;
+  total_sections: number;
+  sections: OutlineSection[];
+}
+
+export interface ModelTierInfo {
+  tier_name: string;
+  primary_model: string;
+  fallback_model: string;
+  timeout_seconds: number;
+  max_tokens: number;
+  input_cost_per_1m_tokens_inr: number;
+  output_cost_per_1m_tokens_inr: number;
+  supported_tasks: string[];
+}
+
+export interface ModelInventoryResponse {
+  architecture: string;
+  primary_provider: string;
+  fallback_provider: string;
+  offline_fallback: string;
+  tiers: Record<string, ModelTierInfo>;
+  telemetry: Record<string, any>;
+  verified_statutory_laws: string[];
+  timestamp: string;
+}
+
+/**
+ * Compares two legal documents with file uploads or text.
+ */
+export async function compareDocuments(payload: {
+  fileA?: File;
+  fileB?: File;
+  documentA?: string;
+  documentB?: string;
+  titleA?: string;
+  titleB?: string;
+  language?: string;
+  sessionId?: string;
+}): Promise<DocumentCompareResponse> {
+  const formData = new FormData();
+  if (payload.fileA) formData.append("file_a", payload.fileA);
+  if (payload.fileB) formData.append("file_b", payload.fileB);
+  if (payload.documentA) formData.append("document_a", payload.documentA);
+  if (payload.documentB) formData.append("document_b", payload.documentB);
+  if (payload.titleA) formData.append("title_a", payload.titleA);
+  if (payload.titleB) formData.append("title_b", payload.titleB);
+  if (payload.language) formData.append("language", payload.language);
+  if (payload.sessionId) formData.append("session_id", payload.sessionId);
+
+  const res = await fetch(`${API_BASE_URL}/documents/compare`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Document comparison error (${res.status}): ${errText}`);
+  }
+  return res.json();
+}
+
+/**
+ * Compares two legal documents via JSON payload.
+ */
+export async function compareDocumentsJson(payload: {
+  document_a: string;
+  document_b: string;
+  title_a?: string;
+  title_b?: string;
+  language?: string;
+  session_id?: string;
+}): Promise<DocumentCompareResponse> {
+  const res = await fetch(`${API_BASE_URL}/documents/compare-json`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Document comparison error (${res.status}): ${errText}`);
+  }
+  return res.json();
+}
+
+/**
+ * Generates structured document outline for in-document navigation.
+ */
+export async function getDocumentOutline(payload: {
+  raw_text?: string;
+  document_id?: string;
+  title?: string;
+}): Promise<DocumentOutlineResponse> {
+  const res = await fetch(`${API_BASE_URL}/documents/outline`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Outline generation error (${res.status}): ${errText}`);
+  }
+  return res.json();
+}
+
+/**
+ * Fetches GenAI multi-tier inventory and sustainability telemetry.
+ */
+export async function getModelMetadata(): Promise<ModelInventoryResponse> {
+  const res = await fetch(`${API_BASE_URL}/meta/models`);
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Model metadata error (${res.status}): ${errText}`);
+  }
+  return res.json();
+}
+
+/**
+ * Fetches general system metadata.
+ */
+export async function getSystemMetadata(): Promise<{
+  app_name: string;
+  app_version: string;
+  environment: string;
+  supported_languages: string[];
+  modules: Array<{ id: string; name: string; verb: string }>;
+}> {
+  const res = await fetch(`${API_BASE_URL}/meta/system`);
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`System metadata error (${res.status}): ${errText}`);
   }
   return res.json();
 }

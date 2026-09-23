@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from typing import Any, Optional
 import httpx
 
+from app.core.config import get_settings
 from app.sources.base import SourceAdapter, SourceMetadata
 
 
@@ -21,12 +22,13 @@ class ECourtsAdapter(SourceAdapter):
     """
 
     def __init__(self, http_client: Optional[httpx.AsyncClient] = None) -> None:
+        settings = get_settings()
         metadata = SourceMetadata(
             source_code="ECOURTS",
             name="eCourts Services (e-Committee, Supreme Court of India)",
             tier=1,
             publisher="e-Committee, Supreme Court of India / National Informatics Centre (NIC)",
-            source_url="https://ecourts.gov.in",
+            source_url=getattr(settings, "ECOURTS_PORTAL_URL", "https://ecourts.gov.in"),
             jurisdiction="Union of India",
             update_cadence_days=30,
         )

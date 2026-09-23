@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from typing import Any, Optional
 import httpx
 
+from app.core.config import get_settings
 from app.sources.base import SourceAdapter, SourceMetadata
 
 
@@ -18,12 +19,13 @@ class IndiaCodeAdapter(SourceAdapter):
     """
 
     def __init__(self, http_client: Optional[httpx.AsyncClient] = None) -> None:
+        settings = get_settings()
         metadata = SourceMetadata(
             source_code="INDIA_CODE",
             name="India Code (Official Digital Repository of Central Acts)",
             tier=1,
             publisher="Legislative Department, Ministry of Law and Justice, Government of India",
-            source_url="https://www.indiacode.nic.in",
+            source_url=getattr(settings, "INDIA_CODE_BASE_URL", "https://www.indiacode.nic.in"),
             jurisdiction="Union of India",
             update_cadence_days=7,
         )

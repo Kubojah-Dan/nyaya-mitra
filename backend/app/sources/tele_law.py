@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from typing import Any, Optional
 import httpx
 
+from app.core.config import get_settings
 from app.sources.base import SourceAdapter, SourceMetadata
 
 
@@ -16,12 +17,13 @@ class TeleLawAdapter(SourceAdapter):
     """
 
     def __init__(self, http_client: Optional[httpx.AsyncClient] = None) -> None:
+        settings = get_settings()
         metadata = SourceMetadata(
             source_code="TELE_LAW",
             name="Tele-Law Program (Department of Justice, Government of India)",
             tier=1,
             publisher="Department of Justice, Ministry of Law and Justice",
-            source_url="https://www.tele-law.in",
+            source_url=getattr(settings, "TELE_LAW_URL", "https://www.tele-law.in"),
             jurisdiction="Union of India",
             update_cadence_days=30,
         )

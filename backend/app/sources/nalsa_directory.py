@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from typing import Any, Optional
 import httpx
 
+from app.core.config import get_settings
 from app.sources.base import SourceAdapter, SourceMetadata
 
 
@@ -17,12 +18,13 @@ class NALSADirectoryAdapter(SourceAdapter):
     """
 
     def __init__(self, http_client: Optional[httpx.AsyncClient] = None) -> None:
+        settings = get_settings()
         metadata = SourceMetadata(
             source_code="NALSA_DIRECTORY",
             name="National Legal Services Authority (NALSA) Official Directory",
             tier=1,
             publisher="National Legal Services Authority, Department of Justice",
-            source_url="https://nalsa.gov.in",
+            source_url=getattr(settings, "NALSA_PORTAL_URL", "https://nalsa.gov.in"),
             jurisdiction="Union of India",
             update_cadence_days=14,
         )

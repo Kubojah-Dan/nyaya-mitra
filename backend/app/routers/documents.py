@@ -13,6 +13,7 @@ from pydantic import BaseModel, Field
 from app.services.deadline_guardian import DeadlineGuardian
 from app.services.document_classifier import DocumentClassifier
 from app.services.ocr_service import DocumentSecurityValidator, OCRService
+from app.services.outline_service import DocumentOutlineResponse, OutlineService
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
@@ -216,6 +217,35 @@ async def download_calendar_ics(doc_id: str):
             "Content-Disposition": f"attachment; filename=nyayamitra-deadlines-{doc_id[:8]}.ics"
         },
     )
+
+
+class DocumentOutlineRequest(BaseModel):
+    raw_text: Optional[str] = None
+    document_id: Optional[str] = None
+    title: Optional[str] = "Legal Document"
+
+
+@router.post("/outline", response_model=DocumentOutlineResponse)
+async def generate_document_outline(payload: DocumentOutlineRequest):
+    """
+    Generates a structured, hierarchical document section outline from raw text
+    or referenced document_id for sticky navigation and screen-reader accessibility.
+    """
+    text = payload.raw_text or ""
+    title = payload.title or "Legal Document"
+
+    if payload.document_id and payload.document_id in _DOCUMENT_STORE:
+        doc = _DOCUMENT_STORE[payload.document_id]
+        text = text or doc.get("plain_summary", "") or doc.get("redacted_preview", "")
+        title = payload.title or doc.get("filename", "Legal Document")
+
+    if not text.strip():
+        raise HTTPException(
+            status_code=400,
+            detail="Either non-empty 'raw_text' or a valid 'document_id' must be provided.",
+        )
+
+    return OutlineService.generate_outline(text=text, document_id=payload.document_id, title=title)
 
 
 def _generate_plain_summary(

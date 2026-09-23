@@ -4,7 +4,7 @@
 ### AI for Legal Assistance & Access in India
 **"Legal Rights For a Stronger Tomorrow"**
 
-[![NyayaMitra CI](https://github.com/nyayamitra/nyayamitra/actions/workflows/ci.yml/badge.svg)](https://github.com/nyayamitra/nyayamitra/actions/workflows/ci.yml)
+[![NyayaMitra CI](https://github.com/Kubojah-Dan/nyaya-mitra/actions/workflows/ci.yml/badge.svg)](https://github.com/Kubojah-Dan/nyaya-mitra/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python: 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](backend/pyproject.toml)
 [![Next.js: 14](https://img.shields.io/badge/Next.js-14-black.svg)](frontend/package.json)
@@ -17,9 +17,23 @@
   <img src="docs/images/nyayamitra_hero_banner.jpg" alt="NyayaMitra — AI Legal Assistance Platform for India" width="680" style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);" />
 </p>
 
-> **NyayaMitra** is a citizen-first legal assistance platform designed for India's 1.4 billion people. Grounded strictly in active Union enactments—incorporating the 2024 criminal law transitions (**Bharatiya Nyaya Sanhita**, **Bharatiya Nagarik Suraksha Sanhita**, and **Bharatiya Sakshya Adhiniyam**)—NyayaMitra empowers ordinary citizens to understand legal problems in plain language (Hindi & English), calculate strict court deadlines, draft deterministic dispute documents, and access 100% free legal aid under Section 12 of the Legal Services Authorities Act, 1987.
+> **PromptWars Track Alignment**: NyayaMitra is an open-access AI platform purpose-built for India's 1.4 billion citizens to **understand**, **compare**, and **navigate** legal documents and judicial proceedings in plain language (Hindi & English), grounded in current Tier-1 enactments (**Bharatiya Nyaya Sanhita**, **Bharatiya Nagarik Suraksha Sanhita**, and **Bharatiya Sakshya Adhiniyam** 2024), with zero hallucinated citations, deterministic document drafting, and free legal aid escalation under Section 12 of the Legal Services Authorities Act, 1987.
 
 </div>
+
+---
+
+## 🎯 Features vs. PromptWars Track Alignment Matrix
+
+| Rubric Verb / Track Requirement | Application Module | Route / Deep Link | Statutory & Technical Grounding | Key User Capability |
+|:---|:---|:---|:---|:---|
+| **UNDERSTAND** | **Guided Legal Intake** | [`/`](file:///d:/Legal-Assistance-Access/frontend/app/page.tsx), [`/app?tab=intake`](file:///d:/Legal-Assistance-Access/frontend/app/app/page.tsx), [`/intake`](file:///d:/Legal-Assistance-Access/frontend/app/intake/page.tsx) | BNS 2023, CPA 2019, RTI 2005, DPDPA 2023 | Multilingual citizen consultation (EN/HI), voice-to-text intake, adaptive legal domain clarification, and fact gathering. |
+| **UNDERSTAND** | **Statutory Rights & Timelines** | [`/app?tab=rights`](file:///d:/Legal-Assistance-Access/frontend/app/app/page.tsx), [`/rights`](file:///d:/Legal-Assistance-Access/frontend/app/rights/page.tsx) | India Code Tier-1 Acts, Limitation Act 1963 | "Mere Adhikaar" verified statutory rights, plain-language procedural roadmap, and firm limitation deadlines. |
+| **UNDERSTAND** | **Document Scanner & Deadline Guardian** | [`/app?tab=scanner`](file:///d:/Legal-Assistance-Access/frontend/app/app/page.tsx), [`/documents`](file:///d:/Legal-Assistance-Access/frontend/app/documents/page.tsx) | OCR + PII Redaction, ICS Generator | Upload notices/summons, auto-detect court appearance dates, redact Aadhaar/phone, and export calendar invites. |
+| **COMPARE** | **Document & Agreement Comparison** | [`/compare`](file:///d:/Legal-Assistance-Access/frontend/app/compare/page.tsx) | Sequence Alignment + GenAI Tier-3 Synthesis | Side-by-side diffing of leases, employment agreements, or notices; clause additions/deletions and risk delta audit. |
+| **NAVIGATE** | **Document Outline & Clause Navigator** | [`/navigate`](file:///d:/Legal-Assistance-Access/frontend/app/navigate/page.tsx) | Section Tree Parser + Sticky Jump Nav | Hierarchical structural outline, instant jump-to-clause, key terms extraction, and screen-reader accessible bookmarks. |
+| **NAVIGATE** | **Legal Aid Resource Escalation** | [`/app?tab=escalation`](file:///d:/Legal-Assistance-Access/frontend/app/app/page.tsx), [`/legal-aid`](file:///d:/Legal-Assistance-Access/frontend/app/legal-aid/page.tsx) | Section 12 LSAA 1987, NALSA Directory | Automatic eligibility assessment for 100% free legal representation and verified DLSA directory locator + 15100 dialer. |
+| **DRAFT** | **Controlled Document Generator** | [`/app?tab=generator`](file:///d:/Legal-Assistance-Access/frontend/app/app/page.tsx), [`/generator`](file:///d:/Legal-Assistance-Access/frontend/app/generator/page.tsx) | Deterministic Jinja/Pydantic Slots | Zero-hallucination legal demand notices, tenancy refund notices, RTI applications, and consumer disputes. |
 
 ---
 

@@ -1,3 +1,14 @@
+"""
+NyayaMitra Health, Observability & Readiness Router
+Public contract for readiness probes, component diagnostics, cache inspection,
+in-flight metrics collection, and upstream provider status checks.
+
+Endpoints:
+- GET /api/v1/health: Basic service liveness and component statuses.
+- GET /api/v1/health/readiness: Deep system readiness probe checking database, cache, and models.
+- GET /api/v1/health/metrics: In-process system performance and request metrics.
+"""
+
 import time
 from typing import Any
 

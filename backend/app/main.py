@@ -20,6 +20,8 @@ from app.routers.intake import router as intake_router
 from app.routers.documents import router as documents_router
 from app.routers.generator import router as generator_router
 from app.routers.escalation import router as escalation_router
+from app.routers.compare import router as compare_router
+from app.routers.meta import router as meta_router
 
 # Configure root logger
 settings = get_settings()
@@ -95,6 +97,8 @@ app.include_router(intake_router, prefix=settings.API_V1_PREFIX)
 app.include_router(documents_router, prefix=settings.API_V1_PREFIX)
 app.include_router(generator_router, prefix=settings.API_V1_PREFIX)
 app.include_router(escalation_router, prefix=settings.API_V1_PREFIX)
+app.include_router(compare_router, prefix=settings.API_V1_PREFIX)
+app.include_router(meta_router, prefix=settings.API_V1_PREFIX)
 
 
 @app.get("/")

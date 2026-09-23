@@ -1,11 +1,15 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import Link from "next/link";
 import {
   Landmark,
   AlertTriangle,
   Users,
   Shield,
   Phone,
+  GitCompare,
+  Compass,
+  MessageSquare,
 } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -63,7 +67,7 @@ export default function RootLayout({
 
         <header className="nm-header" role="banner">
           <div className="nm-header-inner">
-            <a href="/" className="nm-brand" aria-label="NyayaMitra Home">
+            <Link href="/" className="nm-brand" aria-label="NyayaMitra Home">
               <div className="nm-emblem" aria-hidden="true">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -78,12 +82,24 @@ export default function RootLayout({
                 <h1>NyayaMitra</h1>
                 <p>Legal Rights For a Stronger Tomorrow</p>
               </div>
-            </a>
-            <div className="nm-header-controls">
+            </Link>
+            <nav className="nm-header-nav" aria-label="Primary Navigation">
+              <Link href="/app" className="nm-header-nav-link" aria-label="Understand legal problems">
+                <MessageSquare size={15} aria-hidden="true" />
+                <span>Understand</span>
+              </Link>
+              <Link href="/compare" className="nm-header-nav-link" aria-label="Compare legal documents">
+                <GitCompare size={15} aria-hidden="true" />
+                <span>Compare</span>
+              </Link>
+              <Link href="/navigate" className="nm-header-nav-link" aria-label="Navigate legal documents">
+                <Compass size={15} aria-hidden="true" />
+                <span>Navigate</span>
+              </Link>
               <span className="nm-badge-current-law">
-                <span className="nm-badge-dot" aria-hidden="true"></span> Current Law (BNS/BNSS 2024)
+                <span className="nm-badge-dot" aria-hidden="true"></span> BNS/BNSS 2024
               </span>
-            </div>
+            </nav>
           </div>
         </header>
 

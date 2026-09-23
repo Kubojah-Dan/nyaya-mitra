@@ -128,7 +128,7 @@ def test_model_router_fallback_chain():
     
     assert res.status == "FALLBACK_SUCCESS"
     assert res.fallback_used is True
-    assert res.model_used == "claude-3-5-haiku"
+    assert res.model_used == "llama3-70b-8192"
     assert "Fallback successful" in res.content
 
 
