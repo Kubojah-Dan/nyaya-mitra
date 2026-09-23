@@ -23,20 +23,6 @@
 
 ---
 
-## 🎯 Features vs. PromptWars Track Alignment Matrix
-
-| Rubric Verb / Track Requirement | Application Module | Route / Deep Link | Statutory & Technical Grounding | Key User Capability |
-|:---|:---|:---|:---|:---|
-| **UNDERSTAND** | **Guided Legal Intake** | [`/`](file:///d:/Legal-Assistance-Access/frontend/app/page.tsx), [`/app?tab=intake`](file:///d:/Legal-Assistance-Access/frontend/app/app/page.tsx), [`/intake`](file:///d:/Legal-Assistance-Access/frontend/app/intake/page.tsx) | BNS 2023, CPA 2019, RTI 2005, DPDPA 2023 | Multilingual citizen consultation (EN/HI), voice-to-text intake, adaptive legal domain clarification, and fact gathering. |
-| **UNDERSTAND** | **Statutory Rights & Timelines** | [`/app?tab=rights`](file:///d:/Legal-Assistance-Access/frontend/app/app/page.tsx), [`/rights`](file:///d:/Legal-Assistance-Access/frontend/app/rights/page.tsx) | India Code Tier-1 Acts, Limitation Act 1963 | "Mere Adhikaar" verified statutory rights, plain-language procedural roadmap, and firm limitation deadlines. |
-| **UNDERSTAND** | **Document Scanner & Deadline Guardian** | [`/app?tab=scanner`](file:///d:/Legal-Assistance-Access/frontend/app/app/page.tsx), [`/documents`](file:///d:/Legal-Assistance-Access/frontend/app/documents/page.tsx) | OCR + PII Redaction, ICS Generator | Upload notices/summons, auto-detect court appearance dates, redact Aadhaar/phone, and export calendar invites. |
-| **COMPARE** | **Document & Agreement Comparison** | [`/compare`](file:///d:/Legal-Assistance-Access/frontend/app/compare/page.tsx) | Sequence Alignment + GenAI Tier-3 Synthesis | Side-by-side diffing of leases, employment agreements, or notices; clause additions/deletions and risk delta audit. |
-| **NAVIGATE** | **Document Outline & Clause Navigator** | [`/navigate`](file:///d:/Legal-Assistance-Access/frontend/app/navigate/page.tsx) | Section Tree Parser + Sticky Jump Nav | Hierarchical structural outline, instant jump-to-clause, key terms extraction, and screen-reader accessible bookmarks. |
-| **NAVIGATE** | **Legal Aid Resource Escalation** | [`/app?tab=escalation`](file:///d:/Legal-Assistance-Access/frontend/app/app/page.tsx), [`/legal-aid`](file:///d:/Legal-Assistance-Access/frontend/app/legal-aid/page.tsx) | Section 12 LSAA 1987, NALSA Directory | Automatic eligibility assessment for 100% free legal representation and verified DLSA directory locator + 15100 dialer. |
-| **DRAFT** | **Controlled Document Generator** | [`/app?tab=generator`](file:///d:/Legal-Assistance-Access/frontend/app/app/page.tsx), [`/generator`](file:///d:/Legal-Assistance-Access/frontend/app/generator/page.tsx) | Deterministic Jinja/Pydantic Slots | Zero-hallucination legal demand notices, tenancy refund notices, RTI applications, and consumer disputes. |
-
----
-
 ## 📑 Table of Contents
 
 1. [Key Capabilities & Citizen Journey](#-key-capabilities--citizen-journey)
