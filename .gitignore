@@ -92,3 +92,4 @@ evals/runs/
 *.bak
 IMPLEMENTATION.md
 .next-test-server.pid
+.sf/
