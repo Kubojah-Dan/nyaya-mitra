@@ -7,7 +7,8 @@
     "build": "node node_modules/next/dist/bin/next build",
     "start": "node node_modules/next/dist/bin/next start",
     "lint": "node node_modules/next/dist/bin/next lint",
-    "type-check": "node node_modules/typescript/bin/tsc --noEmit"
+    "type-check": "node node_modules/typescript/bin/tsc --noEmit",
+    "test:a11y": "npm run build && playwright test tests/a11y.spec.ts"
   },
   "dependencies": {
     "lucide-react": "^0.474.0",
@@ -16,6 +17,8 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0",
     "@types/node": "^20.17.10",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",

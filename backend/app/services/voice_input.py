@@ -10,6 +10,8 @@ from __future__ import annotations
 import abc
 from dataclasses import dataclass
 
+from app.services.model_router import global_model_router
+
 
 @dataclass
 class TranscriptionResult:
@@ -58,4 +60,23 @@ class TextFallbackAdapter(VoiceInputAdapter):
             detected_language="en",
             is_fallback=True,
             error="" if text else "Empty text input",
+        )
+
+
+class ModelRoutedVoiceInputAdapter(VoiceInputAdapter):
+    """Routes STT requests through the FAST model tier until a live ASR provider is configured."""
+
+    async def transcribe(self, audio_bytes: bytes, language_hint: str = "hi-IN") -> TranscriptionResult:
+        result = global_model_router.route_task(
+            task_type="TRANSCRIBE_VOICE",
+            prompt=f"Transcribe {len(audio_bytes)} bytes of {language_hint} legal-aid voice input.",
+            fallback_deterministic_fn=lambda: "",
+            mock_provider_fn=lambda _model, _prompt: "",
+        )
+        return TranscriptionResult(
+            text=result.content.strip(),
+            confidence=0.0,
+            detected_language=language_hint.split("-")[0],
+            is_fallback=True,
+            error="Speech-to-text provider is not configured." if not result.content.strip() else "",
         )

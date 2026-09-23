@@ -1,3 +1,12 @@
+"""
+NyayaMitra Citation-First RAG Router
+Public contract for answering legal questions only through verified retrieval,
+source-grounded synthesis, and strict response validation.
+
+Endpoints:
+- POST /api/v1/rag/query: Runs the legal RAG pipeline and returns a validated assistance contract.
+"""
+
 from fastapi import APIRouter
 from pydantic import BaseModel
 from starlette.responses import JSONResponse

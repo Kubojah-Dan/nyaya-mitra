@@ -296,9 +296,9 @@ export default function LandingPage() {
                 : "Understand, Compare, Navigate — the three core verbs, fully implemented with three additional power modules."}
             </p>
           </div>
-          <div className="nm-modules-grid" role="list">
+          <div className="nm-modules-grid">
             {modules.map((mod, i) => (
-              <Link key={i} href={mod.href} className="nm-module-card" role="listitem" aria-label={`${mod.title}: ${mod.subtitle}`}>
+              <Link key={i} href={mod.href} className="nm-module-card" aria-label={`${mod.title}: ${mod.subtitle}`}>
                 <div className="nm-module-icon-wrap" style={{ background: `linear-gradient(135deg, ${mod.gradFrom} 0%, ${mod.gradTo} 100%)` }}>
                   {mod.iconEl}
                 </div>

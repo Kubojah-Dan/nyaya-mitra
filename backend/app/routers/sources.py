@@ -1,3 +1,14 @@
+"""
+NyayaMitra Official Legal Sources Router
+Public contract for inspecting registered Tier-1/Tier-2 source connectors,
+upstream health, and provenance metadata used by statutory answers.
+
+Endpoints:
+- GET /api/v1/sources/registry: Lists configured official source connectors.
+- GET /api/v1/sources/health: Checks source adapter health and circuit state.
+- GET /api/v1/sources/{source_code}/provenance: Returns audit provenance for a source item.
+"""
+
 from fastapi import APIRouter, HTTPException
 from starlette.responses import JSONResponse
 

@@ -110,7 +110,7 @@ export default function RootLayout({
         <footer className="nm-footer" role="contentinfo">
           <div className="nm-footer-inner">
             <div className="nm-footer-col" style={{ maxWidth: "360px" }}>
-              <h5>NyayaMitra (न्यायमित्र)</h5>
+              <h2>NyayaMitra (न्यायमित्र)</h2>
               <p>
                 An open-access legal empowerment platform helping citizens navigate
                 rights, understand legal notices, draft statutory documents, and connect
@@ -118,7 +118,7 @@ export default function RootLayout({
               </p>
             </div>
             <div className="nm-footer-col">
-              <h5>Essential Helplines</h5>
+              <h2>Essential Helplines</h2>
               <ul>
                 <li><strong>NALSA Legal Aid:</strong> <a href="tel:15100">15100</a> (24x7)</li>
                 <li><strong>Tele-Law Portal:</strong> <a href="https://www.tele-law.in" target="_blank" rel="noopener noreferrer">tele-law.in</a></li>
@@ -127,7 +127,7 @@ export default function RootLayout({
               </ul>
             </div>
             <div className="nm-footer-col">
-              <h5>Official Tier-1 Sources</h5>
+              <h2>Official Tier-1 Sources</h2>
               <ul>
                 <li><a href="https://www.indiacode.nic.in" target="_blank" rel="noopener noreferrer">India Code (Central Acts)</a></li>
                 <li><a href="https://services.ecourts.gov.in" target="_blank" rel="noopener noreferrer">eCourts Services</a></li>

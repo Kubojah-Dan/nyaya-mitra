@@ -296,7 +296,12 @@ export default function ComparePage() {
 
       {/* Results */}
       {result && (
-        <div className="nm-compare-results">
+        <div
+          className="nm-compare-results"
+          aria-live="polite"
+          aria-atomic="false"
+          aria-label={isHi ? "दस्तावेज़ तुलना परिणाम" : "Document comparison results"}
+        >
           {/* Summary Banner */}
           <div className="nm-compare-summary-bar">
             <div className="nm-diff-stat nm-diff-added-stat">

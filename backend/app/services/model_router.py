@@ -119,7 +119,14 @@ class ModelRouterService:
         start_t = time.perf_counter()
         
         # Determine appropriate tier
-        if task_type in ("CLASSIFY", "EXTRACT_ENTITIES", "SLOT_VALIDATE", "TRANSLATE", "SUMMARIZE_BRIEF"):
+        if task_type in (
+            "CLASSIFY",
+            "EXTRACT_ENTITIES",
+            "SLOT_VALIDATE",
+            "TRANSLATE",
+            "SUMMARIZE_BRIEF",
+            "TRANSCRIBE_VOICE",
+        ):
             tier_name = "FAST"
         elif task_type in ("RIGHTS_EXPLANATION", "DOCUMENT_DRAFT", "DEADLINE_AUDIT"):
             tier_name = "BALANCED"

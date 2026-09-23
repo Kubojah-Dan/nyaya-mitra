@@ -83,6 +83,7 @@ function AppDashboardInner() {
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [intakeLoading, setIntakeLoading] = useState<boolean>(false);
   const [intakeError, setIntakeError] = useState<string | null>(null);
+  const sttEnabled = process.env.NEXT_PUBLIC_ENABLE_STT === "true";
 
   // --- Module 2: Rights & Timelines State ---
   const [rightsDomain, setRightsDomain] = useState<string>("TENANCY");
@@ -344,7 +345,7 @@ function AppDashboardInner() {
   return (
     <div className="nm-container">
       {/* Disclaimer Banner */}
-      <aside className="nm-disclaimer-banner" role="alert">
+      <aside className="nm-disclaimer-banner" aria-label="Official citizen legal notice">
         <span className="nm-disclaimer-icon">
           <Scale size={18} aria-hidden="true" />
         </span>
@@ -548,15 +549,17 @@ function AppDashboardInner() {
               disabled={intakeLoading}
               aria-label="Describe your legal issue"
             />
-            <button
-              className={`nm-btn ${isRecording ? "nm-btn-gold" : "nm-btn-secondary"}`}
-              onClick={handleSimulateVoice}
-              disabled={intakeLoading}
-              aria-label="Voice input"
-            >
-              <Mic size={16} aria-hidden="true" />
-              <span>{isRecording ? (lang === "hi" ? "सुन रहे हैं..." : "Listening...") : (lang === "hi" ? "माइक" : "Voice")}</span>
-            </button>
+            {sttEnabled && (
+              <button
+                className={`nm-btn ${isRecording ? "nm-btn-gold" : "nm-btn-secondary"}`}
+                onClick={handleSimulateVoice}
+                disabled={intakeLoading}
+                aria-label="Voice input"
+              >
+                <Mic size={16} aria-hidden="true" />
+                <span>{isRecording ? (lang === "hi" ? "सुन रहे हैं..." : "Listening...") : (lang === "hi" ? "माइक" : "Voice")}</span>
+              </button>
+            )}
             <button
               className="nm-btn nm-btn-primary"
               onClick={() => handleSendMessage()}

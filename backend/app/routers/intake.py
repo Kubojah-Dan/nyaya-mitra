@@ -21,7 +21,7 @@ from starlette.responses import JSONResponse
 from app.services.domain_classifier import classify_domain
 from app.services.intake_engine import GuidedIntakeEngine, IntakeStage
 from app.services.rights_engine import RightsExplanationEngine
-from app.services.voice_input import MockVoiceInputAdapter, TextFallbackAdapter
+from app.services.voice_input import ModelRoutedVoiceInputAdapter, TextFallbackAdapter
 
 router = APIRouter(prefix="/intake", tags=["Guided Intake — Samjho Mera Problem"])
 
@@ -143,7 +143,7 @@ async def transcribe_voice(
     """Transcribe citizen voice audio streams or fallback text into legal intake text."""
     if file is not None:
         audio_bytes = await file.read()
-        adapter = MockVoiceInputAdapter()
+        adapter = ModelRoutedVoiceInputAdapter()
         result = await adapter.transcribe(audio_bytes, language_hint=language)
     elif text_fallback:
         adapter = TextFallbackAdapter()

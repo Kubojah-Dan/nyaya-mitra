@@ -246,6 +246,7 @@ NyayaMitra requires zero obscure configuration. The following variables can be a
 | `DATABASE_URL` | No | `sqlite:///./nyayamitra.db` | Database connection. Automatically creates SQLite if PostgreSQL is absent. |
 | `REDIS_URL` | No | `redis://localhost:6379/0` | Caching tier. Degrades to in-memory TTL dictionary if Redis is offline. |
 | `NEXT_PUBLIC_API_BASE_URL` | Yes | `http://localhost:8000/api/v1` | URL where Next.js communicates with FastAPI backend. |
+| `NEXT_PUBLIC_ENABLE_STT` | No | `false` | Shows the Voice control only when a real speech-to-text integration is enabled. |
 | `JWT_SECRET_KEY` | Yes | Secure random string | Secret key for temporary session tokens. |
 | `RATE_LIMIT_PER_MINUTE` | No | `60` | Anti-abuse rate limit per IP address. |
 
@@ -301,6 +302,9 @@ pytest backend/tests/
 
 # Run frontend TypeScript type checking (0 errors, 0 any types)
 cd frontend && npm run type-check
+
+# Run frontend accessibility checks across /, /app, /compare, and /navigate
+cd frontend && npm run test:a11y
 
 # Run backend linter & type checker
 ruff check backend/

@@ -91,3 +91,4 @@ evals/runs/
 *.tmp
 *.bak
 IMPLEMENTATION.md
+.next-test-server.pid
