@@ -1,0 +1,18 @@
+title = "NyayaMitra Gitleaks Configuration"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Global allowlist for harmless placeholders and test fixtures"
+paths = [
+    '''^\.env\.example$''',
+    '''^docs/.*''',
+    '''^tests/.*fixtures.*''',
+]
+regexes = [
+    '''mock-[a-zA-Z0-9_-]+''',
+    '''test-[a-zA-Z0-9_-]+''',
+    '''sk-placeholder[a-zA-Z0-9]*''',
+    '''example[a-zA-Z0-9]*''',
+]

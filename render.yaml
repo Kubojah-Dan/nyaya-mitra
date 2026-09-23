@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: nyayamitra-api
+    runtime: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn app.main:app --app-dir backend --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: "false"
+      - key: LOG_LEVEL
+        value: INFO
+      - key: USE_SQLITE_FALLBACK
+        value: "false"
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: LLM_PROVIDER
+        value: gemini
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: ALLOWED_ORIGINS
+        value: "https://*.vercel.app,http://localhost:3000"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: RATE_LIMIT_PER_MINUTE
+        value: "60"
+      - key: ENABLE_PII_REDACTION
+        value: "true"

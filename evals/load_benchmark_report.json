@@ -1,0 +1,36 @@
+{
+  "total_requests": 200,
+  "concurrency_level": 20,
+  "total_duration_sec": 0.007,
+  "throughput_rps": 28743.48,
+  "latency": {
+    "min_ms": 0.003,
+    "avg_ms": 0.034,
+    "p50_ms": 0.004,
+    "p90_ms": 0.005,
+    "p95_ms": 0.121,
+    "p99_ms": 0.53,
+    "max_ms": 3.564
+  },
+  "cache_efficiency": {
+    "size": 10,
+    "max_size": 1000,
+    "total_lookups": 200,
+    "total_hits": 190,
+    "total_misses": 10,
+    "hit_ratio": 0.95,
+    "hit_percentage": "95.0%",
+    "total_evictions": 0,
+    "total_invalidations": 0
+  },
+  "economic_metrics": {
+    "total_routed_calls": 10,
+    "total_fallback_calls": 0,
+    "fallback_rate": 0.0,
+    "total_tokens_consumed": 268,
+    "total_cost_inr": 0.0051,
+    "average_cost_per_query_inr": 0.0005,
+    "average_cost_per_query_usd": 6e-06
+  },
+  "benchmark_status": "PASS"
+}
