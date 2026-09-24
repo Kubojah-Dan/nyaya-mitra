@@ -99,7 +99,7 @@ async def classify_single(text: str = Body(..., media_type="text/plain")) -> JSO
 @router.post("/rights")
 async def get_rights_explanation(request: RightsRequest) -> JSONResponse:
     """Generate a 'Mere Adhikaar' verified rights explanation for a session or domain."""
-    engine = _sessions.get(request.session_id)
+    engine = _sessions.get(request.session_id) if request.session_id else None
 
     domain = request.domain
     collected_facts: dict[str, Any] = {}
