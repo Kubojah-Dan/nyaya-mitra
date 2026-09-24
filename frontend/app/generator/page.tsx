@@ -144,42 +144,9 @@ export default function GeneratorStandalonePage() {
   const isHi = lang === "hi";
 
   return (
-    <div className="nm-page-container">
-      {/* Top Header */}
-      <header className="nm-header" role="banner">
-        <div className="nm-header-inner">
-          <div className="nm-logo-group">
-            <Link href="/" className="nm-logo-link">
-              <span className="nm-logo-icon">⚖️</span>
-              <span className="nm-logo-text">NyayaMitra</span>
-            </Link>
-            <span className="nm-badge nm-badge-verified">
-              <FilePen size={12} aria-hidden="true" />
-              Controlled Drafting Engine
-            </span>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <Link href="/app" className="nm-nav-link">
-              {isHi ? "मुख्य ऐप" : "Dashboard"}
-            </Link>
-            <Link href="/compare" className="nm-nav-link">
-              {isHi ? "तुलना" : "Compare"}
-            </Link>
-            <Link href="/legal-aid" className="nm-nav-link">
-              {isHi ? "मुफ्त विधिक सहायता" : "Legal Aid"}
-            </Link>
-            <Link href="/cases" className="nm-nav-link">
-              {isHi ? "ई-कोर्ट्स" : "eCourts"}
-            </Link>
-            <LanguageToggle currentLang={lang} onLanguageChange={setLang} />
-          </div>
-        </div>
-      </header>
-
-      <main id="main-content" className="nm-main" role="main">
-        {/* Hero */}
-        <section className="nm-hero-section" style={{ padding: "2.5rem 1.5rem 2rem" }}>
+    <div className="nm-page-content">
+      {/* Hero */}
+      <section className="nm-hero-section" style={{ padding: "2.5rem 1.5rem 2rem" }}>
           <div style={{ maxWidth: "860px", margin: "0 auto", textAlign: "center" }}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "rgba(255,255,255,0.12)", padding: "4px 12px", borderRadius: "9999px", fontSize: "0.82rem", fontWeight: 600, marginBottom: "0.75rem" }}>
               <Shield size={14} style={{ color: "#86efac" }} aria-hidden="true" />
@@ -345,9 +312,9 @@ export default function GeneratorStandalonePage() {
               ) : (
                 <div style={{ textAlign: "center", padding: "3rem 1rem", color: "var(--text-muted)" }}>
                   <FilePen size={44} style={{ margin: "0 auto 0.75rem", color: "var(--accent-gold, #c59b27)" }} aria-hidden="true" />
-                  <h3 style={{ margin: "0 0 0.35rem", fontSize: "1.05rem", fontWeight: 700, color: "var(--text-main)" }}>
+                  <h2 style={{ margin: "0 0 0.35rem", fontSize: "1.05rem", fontWeight: 700, color: "var(--text-main)" }}>
                     {isHi ? "प्रारूप तैयार करने के लिए फ़ॉर्म भरें" : "Draft Preview Awaiting Generation"}
-                  </h3>
+                  </h2>
                   <p style={{ fontSize: "0.85rem", maxWidth: "340px", margin: "0 auto" }}>
                     {isHi
                       ? "बाईं ओर आवश्यक विवरण दर्ज करें और 'वैधानिक प्रारूप तैयार करें' पर क्लिक करें।"
@@ -358,7 +325,6 @@ export default function GeneratorStandalonePage() {
             </div>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
   );
 }

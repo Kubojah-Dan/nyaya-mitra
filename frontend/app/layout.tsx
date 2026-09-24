@@ -71,7 +71,9 @@ export default function RootLayout({
                 />
               </div>
               <div className="nm-title-group">
-                <h1>NyayaMitra</h1>
+                <span className="nm-brand-title" style={{ fontSize: "1.25rem", fontWeight: 800, color: "#ffffff", display: "block" }}>
+                  NyayaMitra
+                </span>
                 <p>Legal Rights For a Stronger Tomorrow</p>
               </div>
             </Link>

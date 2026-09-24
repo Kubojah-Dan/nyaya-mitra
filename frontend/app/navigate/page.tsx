@@ -214,9 +214,9 @@ export default function NavigatePage() {
             <Compass size={24} aria-hidden="true" />
           </div>
           <div>
-            <h2 id="navigate-page-heading" className="nm-page-h1">
+            <h1 id="navigate-page-heading" className="nm-page-h1">
               {isHi ? "दस्तावेज़ नेविगेशन (Document Navigate)" : "Document Navigation — AI-Powered Outline"}
-            </h2>
+            </h1>
             <p className="nm-page-desc">
               {isHi
                 ? "किसी भी लंबे कानूनी दस्तावेज़ की संरचित रूपरेखा बनाएं और सीधे किसी भी धारा पर जाएं।"
@@ -289,10 +289,10 @@ export default function NavigatePage() {
       {outline && (
         <div className="nm-navigate-results">
           <div className="nm-navigate-outline-header">
-            <h3>
+            <h2>
               <List size={18} aria-hidden="true" />
               {isHi ? "दस्तावेज़ रूपरेखा" : "Document Outline"} — {outline.title}
-            </h3>
+            </h2>
             <span className="nm-badge nm-badge-verified">
               <FileText size={11} aria-hidden="true" />
               {outline.total_sections} {isHi ? "खंड" : "Sections"}

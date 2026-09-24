@@ -361,9 +361,9 @@ function AppDashboardInner() {
       <section className="nm-hero-card">
         <div className="nm-hero-content">
           <div>
-            <h2 className="nm-hero-title">
+            <h1 className="nm-hero-title">
               {lang === "hi" ? "नागरिक विधिक अधिकार केंद्र" : "Citizen Legal Empowerment Dashboard"}
-            </h2>
+            </h1>
             <p className="nm-hero-subtitle">
               {lang === "hi"
                 ? "BNS, BNSS, BSA 2024, RTI अधिनियम 2005 एवं उपभोक्ता संरक्षण अधिनियम 2019 पर आधारित"
@@ -770,11 +770,11 @@ function AppDashboardInner() {
                     </span>
                   </div>
                   <div className="nm-card-feature" style={{ marginTop: "1rem" }}>
-                    <h4><FileCheck size={16} aria-hidden="true" /> {lang === "hi" ? "दस्तावेज़ सारांश" : "Plain Language Summary"}</h4>
+                    <h3><FileCheck size={16} aria-hidden="true" /> {lang === "hi" ? "दस्तावेज़ सारांश" : "Plain Language Summary"}</h3>
                     <p className="nm-feature-body">{docAnalysis.plain_summary}</p>
                   </div>
                   <div className="nm-card-feature" style={{ marginTop: "1rem" }}>
-                    <h4><CalendarDays size={16} aria-hidden="true" /> {lang === "hi" ? "निर्धारित तारीखें" : "Extracted Hearing Dates & Deadlines"}</h4>
+                    <h3><CalendarDays size={16} aria-hidden="true" /> {lang === "hi" ? "निर्धारित तारीखें" : "Extracted Hearing Dates & Deadlines"}</h3>
                     {userDeadlines.length > 0 ? (
                       userDeadlines.map((dl, idx) => (
                         <div key={idx} className="nm-deadline-item">

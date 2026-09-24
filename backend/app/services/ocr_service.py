@@ -318,7 +318,7 @@ class OCRService:
         return "Legal Notice / Document received. Document requires manual verification."
 
     @staticmethod
-    def redact_pii(text: str) -> tuple[str, list[dict[str, str]]]:
+    def redact_pii(text: str) -> tuple[str, list[dict[str, Any]]]:
         """
         Redacts sensitive identifiers like 12-digit Aadhaar, PAN, Bank Account, Phone.
         Returns redacted text and list of masked items.

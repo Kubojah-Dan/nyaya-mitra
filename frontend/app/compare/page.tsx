@@ -148,9 +148,9 @@ export default function ComparePage() {
             <GitCompare size={24} aria-hidden="true" />
           </div>
           <div>
-            <h2 id="compare-page-heading" className="nm-page-h1">
+            <h1 id="compare-page-heading" className="nm-page-h1">
               {isHi ? "दस्तावेज़ तुलना (Document Compare)" : "Document Comparison — Side-by-Side Diff"}
-            </h2>
+            </h1>
             <p className="nm-page-desc">
               {isHi
                 ? "दो कानूनी दस्तावेज़ों की धारावार तुलना करें। जोड़े गए, हटाए गए और बदले गए खंड स्वतः पहचानें।"
@@ -326,7 +326,7 @@ export default function ComparePage() {
           {result.summary && (
             <div className="nm-card-feature nm-compare-ai-summary">
               <div className="nm-feature-header">
-                <h3><Info size={18} aria-hidden="true" /> {isHi ? "AI सारांश" : "AI Comparison Summary"}</h3>
+                <h2><Info size={18} aria-hidden="true" /> {isHi ? "AI सारांश" : "AI Comparison Summary"}</h2>
                 <span className="nm-badge nm-badge-verified">
                   <CheckCircle size={11} aria-hidden="true" />
                   {result.model_used || "Tier-1 Model"}
@@ -354,10 +354,10 @@ export default function ComparePage() {
           )}
 
           {/* Section Deltas */}
-          <h3 className="nm-section-title" style={{ marginTop: "1.5rem" }}>
+          <h2 className="nm-section-title" style={{ marginTop: "1.5rem" }}>
             <GitCompare size={18} aria-hidden="true" />
             {isHi ? "धारावार अंतर (Section-by-Section Diff)" : "Section-by-Section Diff"}
-          </h3>
+          </h2>
 
           <div className="nm-deltas-list" role="list" aria-label="Document section differences">
             {result.deltas && result.deltas.length > 0 ? (

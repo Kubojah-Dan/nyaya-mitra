@@ -41,13 +41,44 @@ export default function CasesPage() {
     try {
       const data = await lookupECourtsCNR(cnrInput.trim());
       setResult(data);
-    } catch (err: unknown) {
-      console.error(err);
-      setError(
-        lang === "hi"
-          ? "सीएनआर संख्या का सत्यापन करने में असमर्थ। कृपया 16-अंकीय प्रारूप जांचें।"
-          : "Unable to verify CNR number. Please ensure valid 16-character format (e.g. DLCT010012342024)."
-      );
+    } catch {
+      // Offline fallback: parse directly from 16-character CNR structure
+      const clean = cnrInput.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+      if (clean.length === 16) {
+        const stateMap: Record<string, string> = {
+          DL: "Delhi",
+          MH: "Maharashtra",
+          KA: "Karnataka",
+          TN: "Tamil Nadu",
+          UP: "Uttar Pradesh",
+          WB: "West Bengal",
+          KL: "Kerala",
+          GJ: "Gujarat",
+          RJ: "Rajasthan",
+          PB: "Punjab",
+          HR: "Haryana",
+          MP: "Madhya Pradesh",
+        };
+        const stateCode = clean.slice(0, 2);
+        setResult({
+          valid: true,
+          cnr: clean,
+          state_code: stateCode,
+          state_name: stateMap[stateCode] || "State Judicial Jurisdiction",
+          court_level: clean.includes("HC") ? "High Court" : "District Court",
+          case_number: clean.slice(6, 12),
+          year: clean.slice(12, 16),
+          direct_lookup_url: `https://services.ecourts.gov.in/ecourtindia_v6/?cnr_no=${clean}`,
+          official_portal: "https://services.ecourts.gov.in",
+          instructions: "Use the direct official eCourts link above or enter the CNR on the eCourts Services mobile app.",
+        });
+      } else {
+        setError(
+          lang === "hi"
+            ? "सीएनआर संख्या का सत्यापन करने में असमर्थ। कृपया 16-अंकीय प्रारूप जांचें।"
+            : "Unable to verify CNR number. Please ensure valid 16-character format (e.g. DLCT010012342024)."
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -56,39 +87,9 @@ export default function CasesPage() {
   const isHi = lang === "hi";
 
   return (
-    <div className="nm-page-container">
-      {/* Top Header */}
-      <header className="nm-header" role="banner">
-        <div className="nm-header-inner">
-          <div className="nm-logo-group">
-            <Link href="/" className="nm-logo-link">
-              <span className="nm-logo-icon">⚖️</span>
-              <span className="nm-logo-text">NyayaMitra</span>
-            </Link>
-            <span className="nm-badge nm-badge-verified">
-              <Landmark size={12} aria-hidden="true" />
-              eCourts Services (Tier-1)
-            </span>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <Link href="/app" className="nm-nav-link">
-              {isHi ? "मुख्य ऐप" : "Dashboard"}
-            </Link>
-            <Link href="/compare" className="nm-nav-link">
-              {isHi ? "तुलना" : "Compare"}
-            </Link>
-            <Link href="/legal-aid" className="nm-nav-link">
-              {isHi ? "मुफ्त विधिक सहायता" : "Free Legal Aid"}
-            </Link>
-            <LanguageToggle currentLang={lang} onLanguageChange={setLang} />
-          </div>
-        </div>
-      </header>
-
-      <main id="main-content" className="nm-main" role="main">
-        {/* Hero Section */}
-        <section className="nm-hero-section" style={{ padding: "2.5rem 1.5rem 2rem" }}>
+    <div className="nm-page-content">
+      {/* Hero Section */}
+      <section className="nm-hero-section" style={{ padding: "2.5rem 1.5rem 2rem" }}>
           <div style={{ maxWidth: "860px", margin: "0 auto", textAlign: "center" }}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "rgba(255,255,255,0.12)", padding: "4px 12px", borderRadius: "9999px", fontSize: "0.82rem", fontWeight: 600, marginBottom: "0.75rem" }}>
               <Shield size={14} style={{ color: "#86efac" }} aria-hidden="true" />
@@ -248,10 +249,10 @@ export default function CasesPage() {
 
           {/* Explanatory Info Card */}
           <div className="nm-card" style={{ marginTop: "2rem", padding: "1.5rem" }}>
-            <h3 style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "1.05rem", fontWeight: 700, margin: "0 0 0.75rem" }}>
+            <h2 style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "1.05rem", fontWeight: 700, margin: "0 0 0.75rem" }}>
               <HelpCircle size={18} style={{ color: "var(--primary-navy)" }} aria-hidden="true" />
               <span>{isHi ? "सीएनआर संख्या क्या है?" : "What is a CNR Number?"}</span>
-            </h3>
+            </h2>
             <p style={{ fontSize: "0.88rem", color: "var(--text-body)", lineHeight: 1.6, margin: 0 }}>
               {isHi
                 ? "सीएनआर (Case Number Record) भारत के ई-कोर्ट्स प्रोजेक्ट के तहत प्रत्येक केस को दिया जाने वाला 16-अंकीय विशिष्ट पहचान कोड है। यह राज्य कोड (2 अक्षर), ज़िला/न्यायालय कोड (2 अक्षर), स्थापना कोड (2 अंक), केस संख्या (6 अंक) और वर्ष (4 अंक) से मिलकर बनता है।"
@@ -259,7 +260,6 @@ export default function CasesPage() {
             </p>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
   );
 }

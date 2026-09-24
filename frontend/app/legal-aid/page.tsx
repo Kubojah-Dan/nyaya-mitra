@@ -95,39 +95,9 @@ export default function LegalAidPage() {
   const isHi = lang === "hi";
 
   return (
-    <div className="nm-page-container">
-      {/* Top Header */}
-      <header className="nm-header" role="banner">
-        <div className="nm-header-inner">
-          <div className="nm-logo-group">
-            <Link href="/" className="nm-logo-link">
-              <span className="nm-logo-icon">⚖️</span>
-              <span className="nm-logo-text">NyayaMitra</span>
-            </Link>
-            <span className="nm-badge nm-badge-verified">
-              <ShieldCheck size={12} aria-hidden="true" />
-              Sec 12 LSAA 1987
-            </span>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <Link href="/app" className="nm-nav-link">
-              {isHi ? "मुख्य ऐप (Dashboard)" : "Full App"}
-            </Link>
-            <Link href="/compare" className="nm-nav-link">
-              {isHi ? "तुलना (Compare)" : "Compare"}
-            </Link>
-            <Link href="/cases" className="nm-nav-link">
-              {isHi ? "ई-कोर्ट केस खोज" : "eCourts Lookup"}
-            </Link>
-            <LanguageToggle currentLang={lang} onLanguageChange={setLang} />
-          </div>
-        </div>
-      </header>
-
-      <main id="main-content" className="nm-main" role="main">
-        {/* Hero Banner */}
-        <section className="nm-hero-section" style={{ padding: "2.5rem 1.5rem 2rem" }}>
+    <div className="nm-page-content">
+      {/* Hero Banner */}
+      <section className="nm-hero-section" style={{ padding: "2.5rem 1.5rem 2rem" }}>
           <div style={{ maxWidth: "860px", margin: "0 auto", textAlign: "center" }}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "rgba(255,255,255,0.12)", padding: "4px 12px", borderRadius: "9999px", fontSize: "0.82rem", fontWeight: 600, marginBottom: "0.75rem" }}>
               <Scale size={14} style={{ color: "#86efac" }} aria-hidden="true" />
@@ -365,7 +335,6 @@ export default function LegalAidPage() {
             </div>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
   );
 }

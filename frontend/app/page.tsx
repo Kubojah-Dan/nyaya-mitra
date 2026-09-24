@@ -183,7 +183,7 @@ export default function LandingPage() {
                 <span>PromptWars 2026 &middot; AI for Legal Assistance &amp; Access</span>
               </div>
 
-              <h2 id="landing-hero-heading" className="nm-hero-h1">
+              <h1 id="landing-hero-heading" className="nm-hero-h1">
                 {isHi ? (
                   <span lang="hi">
                     कानूनी दस्तावेज़ों को{" "}
@@ -199,7 +199,7 @@ export default function LandingPage() {
                     Indian Legal Documents
                   </>
                 )}
-              </h2>
+              </h1>
 
               <p className="nm-hero-desc">
                 {isHi

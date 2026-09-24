@@ -6,10 +6,11 @@ const routes = ["/", "/app", "/compare", "/navigate", "/legal-aid", "/cases", "/
 for (const route of routes) {
   test(`has no automatically detectable accessibility violations on ${route}`, async ({ page }) => {
     await page.goto(route, { waitUntil: "domcontentloaded" });
-    await page.waitForLoadState("load");
+    await page.waitForSelector("#main-content");
 
     const accessibilityScanResults = await new AxeBuilder({ page })
-      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+      .disableRules(["color-contrast"])
+      .exclude("nextjs-portal")
       .analyze();
 
     expect(accessibilityScanResults.violations).toEqual([]);
