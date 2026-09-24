@@ -54,9 +54,52 @@ class InMemoryRateLimiter:
         self.client_records.clear()
 
 
+class DistributedRateLimiter:
+    """Sliding-window rate limiter utilizing Redis (ZADD/ZREMRANGEBYSCORE) with local fallback."""
+
+    def __init__(self, requests_limit: int = 120, window_seconds: int = 60, prefix: str = "nm_rl"):
+        self._requests_limit = requests_limit
+        self.window_seconds = window_seconds
+        self.prefix = prefix
+        self.fallback = InMemoryRateLimiter(requests_limit=requests_limit, window_seconds=window_seconds)
+
+    @property
+    def requests_limit(self) -> int:
+        return self._requests_limit
+
+    @requests_limit.setter
+    def requests_limit(self, value: int):
+        self._requests_limit = value
+        self.fallback.requests_limit = value
+
+    def is_rate_limited(self, client_ip: str) -> tuple[bool, int]:
+        try:
+            from app.services.cache_service import global_cache
+            if global_cache.is_available() and getattr(global_cache, "_redis", None):
+                r = global_cache._redis
+                now = time.time()
+                key = f"{self.prefix}:{client_ip}"
+                pipe = r.pipeline()
+                pipe.zremrangebyscore(key, 0, now - self.window_seconds)
+                pipe.zadd(key, {str(now): now})
+                pipe.zcard(key)
+                pipe.expire(key, self.window_seconds + 1)
+                results = pipe.execute()
+                count = results[2]
+                if count > self._requests_limit:
+                    return True, max(1, int(self.window_seconds))
+                return False, 0
+        except Exception:
+            pass
+        return self.fallback.is_rate_limited(client_ip)
+
+    def reset(self):
+        self.fallback.reset()
+
+
 # Global limiter instances
-default_limiter = InMemoryRateLimiter(requests_limit=120, window_seconds=60)
-upload_limiter = InMemoryRateLimiter(requests_limit=20, window_seconds=60)
+default_limiter = DistributedRateLimiter(requests_limit=120, window_seconds=60, prefix="nm_rl_default")
+upload_limiter = DistributedRateLimiter(requests_limit=20, window_seconds=60, prefix="nm_rl_upload")
 
 
 class SecurityHardeningMiddleware(BaseHTTPMiddleware):

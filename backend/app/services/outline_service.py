@@ -75,7 +75,6 @@ class OutlineService:
             )
 
         lines = text.splitlines(keepends=True)
-        sections: list[OutlineSection] = []
         
         # Track offsets
         current_offset = 0
@@ -93,11 +92,11 @@ class OutlineService:
             line_len = len(line)
             
             if line_str:
-                m = line_pattern.match(line_str)
-                if m:
+                reg_m = line_pattern.match(line_str)
+                if reg_m:
                     heading_text = line_str
                     level = 1
-                    if "." in (m.group(1) or "") or line_str.startswith("("):
+                    if "." in (reg_m.group(1) or "") or line_str.startswith("("):
                         level = 2
                     matches.append({
                         "heading": heading_text,
@@ -129,10 +128,12 @@ class OutlineService:
 
         # Build end_char positions and nested tree
         raw_sections: list[OutlineSection] = []
-        for i, m in enumerate(matches):
-            next_start = matches[i + 1]["start_char"] if i + 1 < len(matches) else len(text)
-            sec_id = f"sec-{i + 1}-{cls.slugify(m['heading'])}"
-            section_content = text[m["start_char"]:next_start].strip()
+        for i, item in enumerate(matches):
+            next_start = int(matches[i + 1]["start_char"]) if i + 1 < len(matches) else len(text)
+            start_pos = int(item["start_char"])
+            item_heading = str(item["heading"])
+            sec_id = f"sec-{i + 1}-{cls.slugify(item_heading)}"
+            section_content = text[start_pos:next_start].strip()
             
             # Extract 1-sentence synopsis
             first_sentence = section_content.split(". ")[0].replace("\n", " ").strip()
@@ -141,10 +142,10 @@ class OutlineService:
             raw_sections.append(
                 OutlineSection(
                     section_id=sec_id,
-                    heading=m["heading"],
-                    start_char=m["start_char"],
+                    heading=item_heading,
+                    start_char=start_pos,
                     end_char=next_start,
-                    level=m["level"],
+                    level=int(item["level"]),
                     summary=summary,
                     children=[],
                 )

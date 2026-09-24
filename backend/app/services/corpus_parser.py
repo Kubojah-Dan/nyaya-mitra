@@ -74,7 +74,7 @@ class LegalCorpusParser:
         full_section_content = header + body
 
         words = full_section_content.split()
-        chunks = []
+        chunks: list[dict[str, Any]] = []
         chunk_words = 300  # approximately ~400 tokens
 
         for i in range(0, len(words), chunk_words):

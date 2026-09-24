@@ -92,7 +92,7 @@ class PerformanceBenchmarkRunner:
     def run_benchmark(self) -> dict[str, Any]:
         """Executes sequential and concurrent workload simulation."""
         print("================================================================")
-        print(f" Running NyayaMitra Performance & Load Benchmark")
+        print(" Running NyayaMitra Performance & Load Benchmark")
         print(f" Total Requests: {self.total_requests} | Concurrency: {self.concurrency}")
         print("================================================================")
 

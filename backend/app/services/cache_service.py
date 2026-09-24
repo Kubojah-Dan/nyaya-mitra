@@ -51,6 +51,11 @@ class ResponseCacheService:
         self.total_misses = 0
         self.total_evictions = 0
         self.total_invalidations = 0
+        self._redis: Any = None
+
+    def is_available(self) -> bool:
+        """Indicates if the cache engine is available."""
+        return True
 
     @staticmethod
     def generate_cache_key(namespace: str, payload: Any) -> str:

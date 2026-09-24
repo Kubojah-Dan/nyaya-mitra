@@ -91,7 +91,7 @@ async def analyze_document_upload(
             mime_type = val_result["mime_type"]
             file_hash = val_result["sha256_hash"]
         except ValueError as e:
-            raise HTTPException(status_code=400, detail=str(e))
+            raise HTTPException(status_code=400, detail=str(e)) from e
     elif raw_text:
         filename = (document_title or "raw_text_input") + ".txt"
         file_bytes = raw_text.encode("utf-8")

@@ -50,7 +50,7 @@ async def get_legal_aid_resources(
     district: Optional[str] = Query(None, description="District name (e.g. Saket, Pune, Bengaluru Urban)"),
 ):
     """Retrieves verified DLSA, SLSA, and NALSA contacts for a given jurisdiction."""
-    return EscalationService.get_escalation_resources(state=state, district=district)
+    return EscalationService.get_escalation_resources(state=state or "DELHI", district=district)
 
 
 @router.post("/eligibility", response_model=EligibilityEvaluation)

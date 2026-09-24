@@ -59,7 +59,7 @@ async def compare_legal_documents(
             text_a = OCRService.extract_text(bytes_a, val_a["mime_type"], filename=filename_a)["text"]
             resolved_title_a = filename_a
         except ValueError as e:
-            raise HTTPException(status_code=400, detail=f"Invalid file A: {str(e)}")
+            raise HTTPException(status_code=400, detail=f"Invalid file A: {str(e)}") from e
     elif document_a:
         text_a = document_a
     else:
@@ -75,7 +75,7 @@ async def compare_legal_documents(
             text_b = OCRService.extract_text(bytes_b, val_b["mime_type"], filename=filename_b)["text"]
             resolved_title_b = filename_b
         except ValueError as e:
-            raise HTTPException(status_code=400, detail=f"Invalid file B: {str(e)}")
+            raise HTTPException(status_code=400, detail=f"Invalid file B: {str(e)}") from e
     elif document_b:
         text_b = document_b
     else:
@@ -94,7 +94,7 @@ async def compare_legal_documents(
         return CompareService.compare(req)
     except Exception as exc:
         logger.error(f"Error executing document compare: {exc}", exc_info=True)
-        raise HTTPException(status_code=500, detail="Failed to process document comparison.")
+        raise HTTPException(status_code=500, detail="Failed to process document comparison.") from exc
 
 
 @router.post("/compare-json", response_model=DocumentCompareResponse)
@@ -109,4 +109,4 @@ async def compare_legal_documents_json(request: DocumentCompareRequest):
         return CompareService.compare(request)
     except Exception as exc:
         logger.error(f"Error executing document compare json: {exc}", exc_info=True)
-        raise HTTPException(status_code=500, detail="Failed to process document comparison.")
+        raise HTTPException(status_code=500, detail="Failed to process document comparison.") from exc

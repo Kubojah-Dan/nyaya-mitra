@@ -1,5 +1,7 @@
 from functools import lru_cache
+from typing import Optional
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -12,16 +14,23 @@ class Settings(BaseSettings):
     LOG_LEVEL: str = "INFO"
     HOST: str = "0.0.0.0"
     PORT: int = 8000
-    SECRET_KEY: str = "development-secret-key-change-in-production-min-32-bytes"
+    SECRET_KEY: str = Field(
+        default="development-secret-key-32-bytes-long-for-local-runs-only",
+        min_length=32,
+        description="Cryptographic secret key for session verification",
+    )
 
     # API Namespace
     API_V1_PREFIX: str = "/api/v1"
 
     # CORS
-    ALLOWED_ORIGINS: str = "http://localhost:3000,http://127.0.0.1:3000"
+    ALLOWED_ORIGINS: str = "http://localhost:3000,http://127.0.0.1:3000,https://*.vercel.app"
 
     # Database
-    DATABASE_URL: str = "postgresql+asyncpg://nyayamitra:password@localhost:5432/nyayamitra"
+    DATABASE_URL: str = Field(
+        default="postgresql+asyncpg://nyayamitra:nyayamitra_db_secret@localhost:5432/nyayamitra",
+        description="PostgreSQL async connection string",
+    )
     SQLITE_DB_PATH: str = "./nyayamitra.db"
     USE_SQLITE_FALLBACK: bool = True
 
@@ -60,6 +69,11 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore"
     )
+
+    def model_post_init(self, __context) -> None:
+        if self.ENVIRONMENT == "production":
+            if "development-secret-key" in self.SECRET_KEY:
+                raise RuntimeError("SECRET_KEY must be securely configured in production environment.")
 
     @property
     def cors_origins(self) -> list[str]:

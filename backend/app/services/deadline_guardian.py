@@ -251,9 +251,9 @@ class DeadlineGuardian:
                 day = int(named_match.group(1))
                 month_name = named_match.group(2)
                 year = int(named_match.group(3))
-                month = MONTH_MAP.get(month_name)
-                if month and 1 <= day <= 31 and 1900 <= year <= 2100:
-                    return datetime(year, month, day, 10, 0, 0)
+                parsed_month = MONTH_MAP.get(month_name)
+                if parsed_month is not None and 1 <= day <= 31 and 1900 <= year <= 2100:
+                    return datetime(year, parsed_month, day, 10, 0, 0)
             except Exception:
                 pass
 
@@ -306,7 +306,7 @@ class DeadlineGuardian:
                 f"DTEND;VALUE=DATE:{dtend}",
                 f"SUMMARY:{summary}",
                 f"DESCRIPTION:{desc}",
-                f"STATUS:CONFIRMED",
+                "STATUS:CONFIRMED",
                 "PRIORITY:1",
                 "BEGIN:VALARM",
                 "TRIGGER:-P1D",

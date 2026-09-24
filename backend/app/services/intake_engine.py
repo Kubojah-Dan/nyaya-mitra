@@ -339,7 +339,7 @@ class GuidedIntakeEngine:
         required = _REQUIRED_FACTS.get(self.state.domain, _REQUIRED_FACTS["GENERAL"])
         key_to_question = {r["key"]: r for r in required}
 
-        questions = []
+        questions: list[str] = []
         for key in self.state.pending_question_keys:
             if len(questions) >= self.MAX_QUESTIONS_PER_TURN:
                 break

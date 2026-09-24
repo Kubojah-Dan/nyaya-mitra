@@ -43,7 +43,8 @@ class BaseRepository(Generic[ModelType]):
         stmt = delete(self.model).where(self.model.id == id)
         result = await self.session.execute(stmt)
         await self.session.flush()
-        return result.rowcount > 0
+        rowcount = getattr(result, "rowcount", 0)
+        return bool(rowcount and rowcount > 0)
 
     async def count(self) -> int:
         stmt = select(func.count()).select_from(self.model)

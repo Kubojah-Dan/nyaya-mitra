@@ -41,3 +41,16 @@ async def get_source_provenance(source_code: str, item_id: str = "general"):
     if not adapter:
         raise HTTPException(status_code=404, detail=f"Source adapter '{source_code}' not found")
     return JSONResponse(adapter.get_provenance(item_id))
+
+
+@router.get("/ecourts/cnr/{cnr_number}")
+async def lookup_ecourts_cnr(cnr_number: str):
+    """Tier-1 eCourts Case Number Record (CNR) lookup, structure parsing, and direct hearing portal locator."""
+    registry = get_source_registry()
+    adapter = registry.get_adapter("ECOURTS")
+    if not adapter or not hasattr(adapter, "parse_and_validate_cnr"):
+        from app.sources.ecourts import ECourtsAdapter
+        adapter = ECourtsAdapter()
+    res = adapter.parse_and_validate_cnr(cnr_number)
+    return JSONResponse(res)
+

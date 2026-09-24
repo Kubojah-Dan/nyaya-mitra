@@ -139,7 +139,7 @@ class DocumentClassifier:
                 "description": "General or unclassified legal correspondence.",
             }
 
-        best_type = max(type_scores, key=type_scores.get)
+        best_type = max(type_scores, key=lambda k: type_scores[k])
         raw_score = type_scores[best_type]
         confidence = min(0.98, max(0.55, 0.5 + (raw_score * 0.08)))
 

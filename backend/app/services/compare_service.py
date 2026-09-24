@@ -227,8 +227,7 @@ class CompareService:
                     )
                     deltas.append(delta)
                 else:
-                    # Modified: calculate quick ratio and describe change
-                    ratio = difflib.SequenceMatcher(None, text_a, text_b).ratio()
+                    # Modified: describe change
                     desc = cls._summarize_modification(text_a, text_b, req.language or "en")
                     delta = SectionDelta(
                         section_id=f"sec-diff-{idx}",
@@ -360,4 +359,4 @@ class CompareService:
             for f in found:
                 matches.add(f.strip())
 
-        return sorted(list(matches))
+        return sorted(matches)

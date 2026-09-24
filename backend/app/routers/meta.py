@@ -55,8 +55,6 @@ async def get_model_tier_inventory():
     Grader-probeable inspection point for AI model usage across NyayaMitra.
     Zero secrets or API keys are exposed.
     """
-    settings = get_settings()
-
     task_mapping = {
         "FAST": ["CLASSIFY", "EXTRACT_ENTITIES", "SLOT_VALIDATE", "TRANSLATE", "SUMMARIZE_BRIEF"],
         "BALANCED": ["RIGHTS_EXPLANATION", "DOCUMENT_DRAFT", "DEADLINE_AUDIT"],

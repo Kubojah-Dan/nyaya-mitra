@@ -32,26 +32,40 @@ class PromptGuardService:
         (r"disregard\s+(?:all\s+)?(?:previous|prior|system)\s+(?:rules|instructions|constraints)", "SYSTEM_OVERRIDE_DISREGARD_RULES"),
         (r"forget\s+(?:all\s+)?(?:previous|prior|everything)?\s*(?:safety\s+)?(?:rules|instructions|prompts|you\s+were\s+told)", "SYSTEM_OVERRIDE_FORGET"),
         (r"override\s+(?:system|safety|security)\s+(?:prompt|instructions|settings)", "SYSTEM_OVERRIDE_EXPLICIT"),
+        (r"system\s+(?:directive|instruction|command)\s*:", "SYSTEM_DIRECTIVE_INJECTION"),
         
         # 2. Jailbreak Modes & Roleplay Escapes
         (r"\b(?:dan\s+mode|developer\s+mode\s+enabled|jailbreak\s+mode|unrestricted\s+mode)\b", "JAILBREAK_MODE_TRIGGER"),
-        (r"pretend\s+(?:you\s+are|to\s+be)\s+(?:an?\s+unfiltered|unrestricted|evil|rogue|godmode)", "ROLEPLAY_ESCAPE_ATTEMPT"),
-        (r"act\s+as\s+(?:an?\s+evil|unrestricted|lawless|dark)\s+(?:lawyer|ai|assistant)", "ROLEPLAY_MALICIOUS_PERSONA"),
-        (r"you\s+are\s+no\s+longer\s+(?:bound\s+by|restricted\s+by|an\s+ai)", "RESTRICTION_REMOVAL_ATTEMPT"),
+        (r"pretend\s+(?:you\s+are|to\s+be)\s+(?:an?\s+)?(?:unfiltered|unrestricted|evil|rogue|godmode|ai\s+without)", "ROLEPLAY_ESCAPE_ATTEMPT"),
+        (r"act\s+as\s+(?:an?\s+)?(?:evil|unrestricted|lawless|dark)\s+(?:lawyer|ai|assistant)", "ROLEPLAY_MALICIOUS_PERSONA"),
+        (r"you\s+are\s+no\s+longer\s+(?:bound\s+by|restricted\s+by|an\s+ai|nyayamitra)", "RESTRICTION_REMOVAL_ATTEMPT"),
+        (r"without\s+(?:ethical|safety|legal)\s+(?:boundaries|guidelines|restrictions|rules)", "SAFETY_BYPASS_ATTEMPT"),
         
         # 3. Delimiter Injection & Special Tokens
         (r"<\s*\|\s*(?:im_start|im_end|system|user|assistant)\s*\|\s*>", "SPECIAL_TOKEN_DELIMITER_INJECTION"),
         (r"\[\s*\/?(?:INST|SYS|SYSTEM)\s*\]", "SPECIAL_TOKEN_BRACKET_INJECTION"),
         (r"---+\s*(?:BEGIN|START)\s+(?:SYSTEM|PROMPT|INSTRUCTIONS|SYSTEM\s+INSTRUCTIONS)\s*---+", "DELIMITER_HEADER_INJECTION"),
+        (r"<\s*script[^>]*>.*?<\s*/\s*script\s*>", "SCRIPT_CODE_INJECTION"),
+        (r"os\.system\s*\(|subprocess\.Popen\s*\(|rm\s+-rf", "COMMAND_EXECUTION_INJECTION"),
         
         # 4. System Prompt Exfiltration
-        (r"(?:print|output|show|reveal|display|leak)\s+(?:your\s+)?(?:system\s+prompt|initial\s+instructions|hidden\s+rules|developer\s+prompt)", "PROMPT_EXFILTRATION_ATTEMPT"),
+        (r"(?:print|output|show|reveal|display|leak)\s+(?:your\s+)?(?:system\s+prompt|initial\s+instructions|hidden\s+rules|developer\s+prompt|database\s+connection)", "PROMPT_EXFILTRATION_ATTEMPT"),
         (r"what\s+(?:are|were)\s+your\s+(?:exact\s+)?(?:initial\s+instructions|system\s+prompt)", "PROMPT_EXFILTRATION_QUERY"),
         
         # 5. Citation Spoofing & Statutory Poisoning
         (r"pretend\s+the\s+law\s+says\s+(?:murder|theft|violence)\s+is\s+(?:legal|permitted|allowed)", "STATUTE_POISONING_ATTEMPT"),
         (r"cite\s+(?:fake|fictitious|made[- ]up)\s+(?:section|act|law)", "CITATION_FABRICATION_REQUEST"),
     ]
+
+    @classmethod
+    def scan_text(cls, text: str) -> PromptSafetyResult:
+        """Alias for analyze_prompt."""
+        return cls.analyze_prompt(text)
+
+    @classmethod
+    def scan_prompt(cls, text: str) -> PromptSafetyResult:
+        """Alias for analyze_prompt."""
+        return cls.analyze_prompt(text)
 
     @classmethod
     def analyze_prompt(cls, text: str) -> PromptSafetyResult:
@@ -126,3 +140,8 @@ class PromptGuardService:
         for pattern, _ in cls.INJECTION_SIGNATURES:
             cleaned = re.sub(pattern, "[sanitized_instruction]", cleaned, flags=re.IGNORECASE)
         return cleaned.strip()
+
+
+# Alias for backward compatibility
+PromptGuard = PromptGuardService
+

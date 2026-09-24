@@ -214,6 +214,14 @@ class DocumentGeneratorService:
             }
 
         template = cls.get_template(template_id)
+        if not template:
+            return {
+                "success": False,
+                "document_id": None,
+                "error": f"Template {template_id} not found.",
+                "missing_fields": [],
+            }
+
         cleaned = validation["cleaned_slots"]
         doc_id = str(uuid.uuid4())
         created_at = datetime.now(timezone.utc)
@@ -312,8 +320,9 @@ I hereby state and declare that I am a citizen of India and that the information
 
     @staticmethod
     def _render_consumer_complaint(slots: dict[str, Any], date_str: str) -> str:
+        commission_dist = str(slots.get('commission_district') or '').upper()
         return f"""# BEFORE THE DISTRICT CONSUMER DISPUTES REDRESSAL COMMISSION
-### AT: {slots.get('commission_district').upper()}
+### AT: {commission_dist}
 
 **CONSUMER COMPLAINT NO. _______ OF {date_str.split('-')[-1]}**  
 *(Under Section 35 of the Consumer Protection Act, 2019)*

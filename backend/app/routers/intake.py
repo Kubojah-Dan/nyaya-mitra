@@ -143,11 +143,9 @@ async def transcribe_voice(
     """Transcribe citizen voice audio streams or fallback text into legal intake text."""
     if file is not None:
         audio_bytes = await file.read()
-        adapter = ModelRoutedVoiceInputAdapter()
-        result = await adapter.transcribe(audio_bytes, language_hint=language)
+        result = await ModelRoutedVoiceInputAdapter().transcribe(audio_bytes, language_hint=language)
     elif text_fallback:
-        adapter = TextFallbackAdapter()
-        result = await adapter.transcribe(text_fallback.encode("utf-8"), language_hint=language)
+        result = await TextFallbackAdapter().transcribe(text_fallback.encode("utf-8"), language_hint=language)
     else:
         raise HTTPException(
             status_code=400,

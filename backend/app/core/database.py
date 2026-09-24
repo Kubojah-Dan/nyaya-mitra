@@ -17,7 +17,7 @@ connect_args: dict = {}
 
 is_postgres = raw_db_url.startswith("postgresql") or raw_db_url.startswith("postgres")
 
-if is_postgres and not ("sqlite" in raw_db_url) and not settings.USE_SQLITE_FALLBACK:
+if is_postgres and "sqlite" not in raw_db_url and not settings.USE_SQLITE_FALLBACK:
     # Normalize Postgres protocol for asyncpg (e.g. Supabase connection URLs)
     if raw_db_url.startswith("postgres://"):
         DATABASE_URL = raw_db_url.replace("postgres://", "postgresql+asyncpg://", 1)

@@ -57,6 +57,31 @@ class ECourtsAdapter(SourceAdapter):
             },
         }
 
+    def parse_and_validate_cnr(self, cnr_number: str) -> dict[str, Any]:
+        """Validates and parses a 16-character CNR number into structured judicial metadata."""
+        clean_cnr = cnr_number.strip().upper().replace("-", "").replace(" ", "")
+        if len(clean_cnr) != 16:
+            return {
+                "valid": False,
+                "error": "Invalid CNR format. A valid CNR number must be exactly 16 alphanumeric characters (e.g. DLCT010012342024).",
+                "cnr": clean_cnr,
+            }
+        state_code = clean_cnr[:2]
+        dist_court = clean_cnr[2:6]
+        case_seq = clean_cnr[6:12]
+        year = clean_cnr[12:16]
+        return {
+            "valid": True,
+            "cnr": clean_cnr,
+            "state_code": state_code,
+            "court_establishment_code": dist_court,
+            "case_sequence": case_seq,
+            "registration_year": year,
+            "direct_lookup_url": f"https://services.ecourts.gov.in/ecourtindia_v6/?cnr_no={clean_cnr}",
+            "official_portal": "https://services.ecourts.gov.in",
+            "instructions": "Use the direct official eCourts link above or enter the CNR on the eCourts Services mobile app to view daily orders and cause list listings.",
+        }
+
     async def fetch_latest(self) -> dict[str, Any]:
         if not self.circuit_breaker.can_execute():
             return {"status": "CIRCUIT_OPEN_SEED_SERVED", "data": self.get_navigation_guidelines()}

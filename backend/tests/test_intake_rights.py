@@ -166,7 +166,7 @@ class TestGuidedIntakeEngine:
 
     def test_contradictory_input_handled(self):
         engine = GuidedIntakeEngine("session-007")
-        result1 = engine.process_turn("I want to file a consumer complaint for defective goods")
+        _ = engine.process_turn("I want to file a consumer complaint for defective goods")
         # Contradictory second input
         result2 = engine.process_turn("Actually no, I want to file an FIR for cheating")
         # Should not crash and should handle gracefully
@@ -212,7 +212,7 @@ class TestRightsExplanationEngine:
         response = engine.explain_rights("RTI", {}, language="en")
 
         deadline_labels = [d.label for d in response.deadlines]
-        assert any("PIO" in l or "Response" in l for l in deadline_labels)
+        assert any("PIO" in lbl or "Response" in lbl for lbl in deadline_labels)
         for dl in response.deadlines:
             assert dl.statutory_basis is not None
             assert len(dl.statutory_basis) > 0
