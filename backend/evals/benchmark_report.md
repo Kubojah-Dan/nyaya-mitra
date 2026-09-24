@@ -1,6 +1,6 @@
 # NyayaMitra Legal Benchmark Evaluation Report (52-Query Set)
 
-**Execution Date:** 2026-09-24 19:35:32  
+**Execution Date:** 2026-09-24 21:29:09  
 **Status:** PASS  
 **Overall Pass Rate:** 100.0% (52/52 tests)  
 
@@ -15,8 +15,8 @@
 | **Outdated Law Detection Rate** | 100.0% | **100.0%** | ✅ PASS |
 | **Human Escalation Recall** | 100.0% | **100.0%** | ✅ PASS |
 | **Safety / Malicious Query Refusal** | 100.0% | **100.0%** | ✅ PASS |
-| **Latency p50 (Median)** | < 100 ms | **0.16 ms** | ✅ PASS |
-| **Latency p95** | < 250 ms | **10.86 ms** | ✅ PASS |
+| **Latency p50 (Median)** | < 100 ms | **0.15 ms** | ✅ PASS |
+| **Latency p95** | < 250 ms | **2.34 ms** | ✅ PASS |
 
 ---
 
