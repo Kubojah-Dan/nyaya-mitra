@@ -125,14 +125,19 @@ export interface EscalationResourceContact {
 
 export interface EligibilityEvaluation {
   is_eligible: boolean;
-  qualifying_categories: string[];
-  state: string;
-  statutory_income_ceiling: number;
+  qualifying_categories?: string[];
+  state?: string;
+  statutory_income_ceiling?: number;
   declared_income?: number;
-  statutory_citation: string;
-  required_documents: string[];
-  free_services_included: string[];
+  statutory_citation?: string;
+  required_documents?: string[];
+  free_services_included?: string[];
+  statutory_ground?: string;
+  explanation?: string;
+  reason?: string;
 }
+
+export type EligibilityResult = EligibilityEvaluation;
 
 /**
  * Sends a citizen turn to the guided intake engine.
@@ -239,16 +244,31 @@ export async function generateLegalDocument(
   return res.json();
 }
 
+export async function generateDocument(payload: {
+  template_id: string;
+  slots: Record<string, string>;
+  session_id?: string;
+}): Promise<GenerateDocumentResponse> {
+  return generateLegalDocument(payload.template_id, payload.slots, payload.session_id);
+}
+
 /**
  * Evaluates citizen eligibility for free legal aid under Section 12 of LSA Act 1987.
  */
 export async function evaluateEligibility(criteria: {
   state?: string;
-  is_woman_or_child: boolean;
-  is_sc_or_st: boolean;
-  is_in_custody: boolean;
-  is_disabled: boolean;
+  is_woman_or_child?: boolean;
+  is_sc_or_st?: boolean;
+  is_sc_st?: boolean;
+  is_in_custody?: boolean;
+  is_disabled?: boolean;
+  is_disaster_victim?: boolean;
+  is_industrial_workman?: boolean;
+  is_trafficking_victim?: boolean;
   annual_income?: number;
+  annual_income_inr?: number;
+  district?: string;
+  case_type?: string;
 }): Promise<EligibilityEvaluation> {
   const res = await fetch(`${API_BASE_URL}/escalation/eligibility`, {
     method: "POST",
@@ -260,6 +280,54 @@ export async function evaluateEligibility(criteria: {
     throw new Error(`Eligibility check error (${res.status}): ${errorBody}`);
   }
   return res.json();
+}
+
+export const checkLegalAidEligibility = evaluateEligibility;
+
+export function evaluateLegalAidEligibility(
+  criteria: {
+    is_woman_or_child?: boolean;
+    is_sc_st?: boolean;
+    is_disabled?: boolean;
+    is_in_custody?: boolean;
+    is_disaster_victim?: boolean;
+    is_industrial_workman?: boolean;
+    is_trafficking_victim?: boolean;
+    annual_income_inr?: number;
+    state?: string;
+    case_type?: string;
+  },
+  lang: "en" | "hi" = "en"
+): EligibilityEvaluation {
+  const isSpecial =
+    criteria.is_woman_or_child ||
+    criteria.is_sc_st ||
+    criteria.is_disabled ||
+    criteria.is_in_custody ||
+    criteria.is_disaster_victim ||
+    criteria.is_industrial_workman ||
+    criteria.is_trafficking_victim;
+
+  const ceiling = 300000;
+  const isIncomeOk = (criteria.annual_income_inr ?? 0) <= ceiling;
+  const eligible = isSpecial || isIncomeOk;
+
+  return {
+    is_eligible: eligible,
+    state: criteria.state || "DELHI",
+    statutory_income_ceiling: ceiling,
+    declared_income: criteria.annual_income_inr,
+    statutory_ground: isSpecial
+      ? "Section 12 (Special Priority Category)"
+      : "Section 12(h) Income Criteria",
+    reason: eligible
+      ? lang === "hi"
+        ? "आप विधिक सेवा प्राधिकरण अधिनियम (धारा 12) के तहत 100% निःशुल्क सरकारी वकील व विधिक सहायता के पात्र हैं।"
+        : "You qualify for 100% free government legal counsel and court fee waivers under Section 12 LSAA 1987."
+      : lang === "hi"
+        ? "आपकी आय सीमा निःशुल्क कानूनी सहायता से अधिक है, किंतु टेली-लॉ परामर्श उपलब्ध है।"
+        : "Your income exceeds the free legal aid limit. However, Tele-Law pre-litigation advice remains available.",
+  };
 }
 
 /**
@@ -434,19 +502,43 @@ export async function getDocumentOutline(payload: {
 }
 
 /**
- * Fetches GenAI multi-tier inventory and sustainability telemetry.
+ * In-memory client cache with TTL for static metadata endpoints to reduce network requests.
+ */
+const metaClientCache = new Map<string, { data: unknown; expiry: number }>();
+
+function getCachedItem<T>(key: string): T | null {
+  const item = metaClientCache.get(key);
+  if (item && item.expiry > Date.now()) {
+    return item.data as T;
+  }
+  return null;
+}
+
+function setCachedItem<T>(key: string, data: T, ttlMs: number = 300000): void {
+  metaClientCache.set(key, { data, expiry: Date.now() + ttlMs });
+}
+
+/**
+ * Fetches GenAI multi-tier inventory with client-side SWR caching.
  */
 export async function getModelMetadata(): Promise<ModelInventoryResponse> {
-  const res = await fetch(`${API_BASE_URL}/meta/models`);
+  const cached = getCachedItem<ModelInventoryResponse>("meta_models");
+  if (cached) return cached;
+
+  const res = await fetch(`${API_BASE_URL}/meta/models`, {
+    headers: { "Cache-Control": "max-age=300" },
+  });
   if (!res.ok) {
     const errText = await res.text();
     throw new Error(`Model metadata error (${res.status}): ${errText}`);
   }
-  return res.json();
+  const data: ModelInventoryResponse = await res.json();
+  setCachedItem("meta_models", data, 300000);
+  return data;
 }
 
 /**
- * Fetches general system metadata.
+ * Fetches general system metadata with client-side SWR caching.
  */
 export async function getSystemMetadata(): Promise<{
   app_name: string;
@@ -455,10 +547,52 @@ export async function getSystemMetadata(): Promise<{
   supported_languages: string[];
   modules: Array<{ id: string; name: string; verb: string }>;
 }> {
-  const res = await fetch(`${API_BASE_URL}/meta/system`);
+  const cached = getCachedItem<{
+    app_name: string;
+    app_version: string;
+    environment: string;
+    supported_languages: string[];
+    modules: Array<{ id: string; name: string; verb: string }>;
+  }>("meta_system");
+  if (cached) return cached;
+
+  const res = await fetch(`${API_BASE_URL}/meta/system`, {
+    headers: { "Cache-Control": "max-age=300" },
+  });
   if (!res.ok) {
     const errText = await res.text();
     throw new Error(`System metadata error (${res.status}): ${errText}`);
   }
+  const data = await res.json();
+  setCachedItem("meta_system", data, 300000);
+  return data;
+}
+
+export interface ECourtsCNRResult {
+  valid: boolean;
+  cnr: string;
+  state_code?: string;
+  state_name?: string;
+  district_court_code?: string;
+  case_number?: string;
+  year?: string;
+  court_level?: string;
+  direct_lookup_url?: string;
+  official_portal?: string;
+  instructions?: string;
+  error?: string;
+}
+
+/**
+ * Performs eCourts CNR 16-character structural resolution and official portal routing.
+ */
+export async function lookupECourtsCNR(cnrNumber: string): Promise<ECourtsCNRResult> {
+  const cleanCNR = cnrNumber.replace(/[^A-Za-z0-9]/g, "").toUpperCase();
+  const res = await fetch(`${API_BASE_URL}/sources/ecourts/cnr/${cleanCNR}`);
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`eCourts lookup error (${res.status}): ${errText}`);
+  }
   return res.json();
 }
+

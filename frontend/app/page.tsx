@@ -105,7 +105,7 @@ export default function LandingPage() {
       iconEl: <FileText size={28} aria-hidden="true" />,
     },
     {
-      href: "/app?tab=generator",
+      href: "/generator",
       icon: "FilePen",
       color: "#7c3aed",
       gradFrom: "#7c3aed",
@@ -119,18 +119,32 @@ export default function LandingPage() {
       iconEl: <FilePen size={28} aria-hidden="true" />,
     },
     {
-      href: "/app?tab=escalation",
+      href: "/legal-aid",
       icon: "Landmark",
       color: "#dc2626",
       gradFrom: "#dc2626",
       gradTo: "#b91c1c",
       title: isHi ? "6. निःशुल्क सहायता" : "6. Free Legal Aid",
-      subtitle: isHi ? "NALSA / DLSA Escalation" : "NALSA / DLSA Directory",
+      subtitle: isHi ? "Section 12 Guided Interview" : "Section 12 Guided Interview",
       desc: isHi
         ? "धारा 12 विधिक सेवा प्राधिकरण अधिनियम के तहत निःशुल्क सरकारी वकील की पात्रता जांचें।"
         : "Verify Section 12 LSAA 1987 eligibility and locate your nearest DLSA / SLSA for 100% free government advocate assignment.",
       badge: "100% Free",
       iconEl: <Landmark size={28} aria-hidden="true" />,
+    },
+    {
+      href: "/cases",
+      icon: "Scale",
+      color: "#0891b2",
+      gradFrom: "#0891b2",
+      gradTo: "#0e7490",
+      title: isHi ? "7. ई-कोर्ट केस खोज" : "7. eCourts Tracker",
+      subtitle: isHi ? "16-Digit CNR Resolution" : "16-Digit CNR Resolution",
+      desc: isHi
+        ? "16-अंकीय सीएनआर संख्या से ज़िला व उच्च न्यायालय के केस की आधिकारिक स्थिति और आदेश खोजें।"
+        : "Track District & High Court cases across India with structural CNR parsing and direct official portal navigation.",
+      badge: "Tier-1 CNR",
+      iconEl: <Scale size={28} aria-hidden="true" />,
     },
   ];
 

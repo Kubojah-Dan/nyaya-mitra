@@ -914,6 +914,32 @@ function AppDashboardInner() {
                     )}
                   </div>
                   <pre className="nm-draft-pre">{generatedDoc.markdown_content}</pre>
+                  {/* Statutory Disclaimer & Caveat Banner */}
+                  <div
+                    style={{
+                      background: "#fffbeb",
+                      border: "1px solid #fde68a",
+                      borderRadius: "8px",
+                      padding: "0.75rem 1rem",
+                      margin: "0.75rem 0",
+                      fontSize: "0.82rem",
+                      color: "#92400e",
+                      display: "flex",
+                      gap: "0.5rem",
+                      alignItems: "flex-start",
+                    }}
+                    role="note"
+                  >
+                    <AlertTriangle size={16} style={{ flexShrink: 0, marginTop: "2px", color: "#d97706" }} aria-hidden="true" />
+                    <div>
+                      <strong>{lang === "hi" ? "महत्वपूर्ण सूचना (यह कानूनी सलाह नहीं है): " : "Statutory Disclaimer (Not Legal Advice): "}</strong>
+                      <span>
+                        {lang === "hi"
+                          ? "यह जनरेटेड प्रारूप केवल एक प्रारंभिक संरचनात्मक ड्राफ्ट है। कोर्ट में दाखिल करने से पूर्व किसी पंजीकृत अधिवक्ता से परामर्श अवश्य लें।"
+                          : "This generated template is a starting draft, not legal advice. Consult an advocate or DLSA panel counsel before filing."}
+                      </span>
+                    </div>
+                  </div>
                   <div className="nm-download-row">
                     <button className="nm-btn nm-btn-primary nm-btn-sm" onClick={() => handleDownloadDoc("md")}>
                       <Download size={13} aria-hidden="true" />
