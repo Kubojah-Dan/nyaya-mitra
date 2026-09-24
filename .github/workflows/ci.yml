@@ -96,7 +96,8 @@ jobs:
       - name: Install Playwright Browser
         run: npx playwright install --with-deps chromium
 
-      - name: Run Accessibility Tests
-        run: npx playwright test tests/a11y.spec.ts
+      - name: Run Accessibility & E2E Tests
+        run: npx playwright test
         env:
           NEXT_PUBLIC_API_BASE_URL: http://localhost:8000/api/v1
+

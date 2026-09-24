@@ -425,6 +425,20 @@ If you face police harassment, arrest risk, domestic violence, or require court 
 - **National Consumer Helpline:** [1915](tel:1915)
 - **Tele-Law Portal:** [https://www.tele-law.in](https://www.tele-law.in)
 
+## 📚 Traceability & Policy Documentation
+
+| Document | Primary Focus & Verification Standard |
+|:---|:---|
+| [**Challenge Traceability Matrix**](docs/PROBLEM_STATEMENT_TRACE.md) | Line-by-line mapping of PromptWars challenge requirements to live code files and endpoints. |
+| [**Accessibility Conformance (WCAG 2.1 AA)**](docs/ACCESSIBILITY.md) | Clause-by-clause WCAG 2.1 AA breakdown, keyboard focus proofs, and `@axe-core/playwright` results. |
+| [**STRIDE Threat Model & Security**](docs/THREAT_MODEL.md) | Threat taxonomy (TM-01 through TM-12), mitigation strategies, and security header contracts. |
+| [**Source & Grounding Policy**](docs/SOURCE_POLICY.md) | Tier-1 (India Code, eCourts, NALSA) hierarchy, citation verifier, and transition mapping. |
+| [**Safety & Privacy Policy**](docs/SAFETY_POLICY.md) | DPDPA 2023 compliance, automated PII redaction (Aadhaar/PAN), and prompt injection defense. |
+| [**Cost & Performance Analysis**](docs/COST_PERFORMANCE.md) | Multi-tier model routing telemetry, p50/p95 latency budgets, and token expenditure accounting. |
+| [**Legal Compliance Guidelines**](docs/COMPLIANCE.md) | Section 12 LSAA 1987 statutory criteria and Tele-Law integration standards. |
+| [**System Operations & Runbook**](docs/OPERATIONS.md) | Production deployment steps, monitoring, health probes, and failover runbooks. |
+| [**Security Policy**](SECURITY.md) | Coordinated vulnerability disclosure policy and security commitments. |
+
 ---
 
 <div align="center">

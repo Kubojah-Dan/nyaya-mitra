@@ -8,7 +8,9 @@
     "start": "node node_modules/next/dist/bin/next start",
     "lint": "node node_modules/next/dist/bin/next lint",
     "type-check": "node node_modules/typescript/bin/tsc --noEmit",
-    "test:a11y": "npm run build && playwright test tests/a11y.spec.ts"
+    "test": "playwright test",
+    "test:a11y": "npm run build && playwright test tests/a11y.spec.ts",
+    "test:e2e": "playwright test tests/modules.spec.ts"
   },
   "dependencies": {
     "lucide-react": "^0.474.0",
