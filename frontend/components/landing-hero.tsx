@@ -31,12 +31,12 @@ export function LandingHero({ language = "en", onSelectTab }: LandingHeroProps) 
         <div>
           <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "rgba(255, 255, 255, 0.12)", border: "1px solid rgba(255, 255, 255, 0.25)", padding: "4px 12px", borderRadius: "9999px", fontSize: "0.8rem", fontWeight: 600, marginBottom: "1rem" }}>
             <Shield size={14} style={{ color: "#86efac" }} aria-hidden="true" />
-            <span>AI for Legal Assistance & Access (PromptWars 2026)</span>
+            <span>AI for Legal Assistance & Access</span>
           </div>
 
           <h2 id="hero-main-heading" className="nm-hero-title-main">
             {isHi ? (
-              <span lang="hi">भारतीय नागरिकों के लिए AI-संचालित कानूनी अधिकार व दस्तावेज़ सहायता</span>
+              <span lang="hi">AI-संचालित कानूनी सहायता और अधिकारों के लिए भारत में AI </span>
             ) : (
               <>Understand, Compare & Navigate Indian Legal Documents with GenAI</>
             )}
