@@ -9,8 +9,8 @@ from datetime import datetime, timezone
 import logging
 import time
 from typing import Optional
-from fastapi import Request
-from starlette.middleware.base import BaseHTTPMiddleware
+from fastapi import Request, Response
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.responses import JSONResponse
 
 logger = logging.getLogger("nyayamitra.security")
@@ -107,7 +107,7 @@ class SecurityHardeningMiddleware(BaseHTTPMiddleware):
     Applies rate limiting, payload size limits, and security audit headers.
     """
 
-    async def dispatch(self, request: Request, call_next):
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         # 1. Identify client IP
         forwarded_for = request.headers.get("X-Forwarded-For")
         client_ip = forwarded_for.split(",")[0].strip() if forwarded_for else (request.client.host if request.client else "127.0.0.1")
