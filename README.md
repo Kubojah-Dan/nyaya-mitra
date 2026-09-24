@@ -236,18 +236,40 @@ docker-compose up --build
 
 ## 🔑 Environment Variables Guide
 
-NyayaMitra requires zero obscure configuration. The following variables can be adjusted in your `.env` file:
+NyayaMitra requires zero obscure configuration. Below is the complete inventory of all supported variables in [`.env`](file:///d:/Legal-Assistance-Access/.env) and [`backend/app/core/config.py`](file:///d:/Legal-Assistance-Access/backend/app/core/config.py):
 
-| Variable Name | Required | Default Value | Description |
-| :--- | :---: | :--- | :--- |
-| `LLM_PROVIDER` | No | `gemini` | Primary AI provider: `gemini`, `groq`, or `mock`. |
-| `GEMINI_API_KEY` | Recommended | `""` | Google AI Studio key for Gemini 1.5 Flash statutory reasoning. |
-| `GROQ_API_KEY` | Optional | `""` | Groq key for fast high-throughput inference fallback. |
-| `DATABASE_URL` | No | `sqlite:///./nyayamitra.db` | Database connection. Automatically creates SQLite if PostgreSQL is absent. |
-| `REDIS_URL` | No | `redis://localhost:6379/0` | Caching tier. Degrades to in-memory TTL dictionary if Redis is offline. |
-| `NEXT_PUBLIC_API_BASE_URL` | Yes | `http://localhost:8000/api/v1` | URL where Next.js communicates with FastAPI backend. |
-| `NEXT_PUBLIC_ENABLE_STT` | No | `false` | Shows the Voice control only when a real speech-to-text integration is enabled. |
-| `JWT_SECRET_KEY` | Yes | Secure random string | Secret key for temporary session tokens. |
+| Variable Name | Category | Default / Example | Purpose & Effective Usage |
+| :--- | :--- | :--- | :--- |
+| `ENVIRONMENT` | Runtime | `development` | Environment mode (`development`, `production`). Governs CORS, debug modes, and strict fail-closed validations. |
+| `DEBUG` | Runtime | `true` | FastAPI detailed error messages. Automatically disabled in production. |
+| `LOG_LEVEL` | Runtime | `INFO` | Logging threshold for structured JSON access logs and security events. |
+| `SECRET_KEY` | Security | `32-byte hex` | Cryptographic secret for signing session tokens and CSRF guards. |
+| `ALLOWED_ORIGINS` | Security | `http://localhost:3000` | Comma-separated list of permitted origins for Cross-Origin Resource Sharing (CORS). |
+| `RATE_LIMIT_PER_MINUTE` | Security | `60` | Sliding window rate limit per client IP enforced by `SecurityHardeningMiddleware`. |
+| `ENABLE_PII_REDACTION` | Security | `true` | Strips Aadhaar numbers, phone numbers, and PANs from document previews and server logs (DPDPA 2023). |
+| `DATABASE_URL` | Database | Supabase URL | PostgreSQL connection string (`postgresql+asyncpg://...`) for persistent session records. |
+| `USE_SQLITE_FALLBACK` | Database | `true` | When `true`, automatically falls back to local SQLite (`nyayamitra.db`) if cloud DB is unreachable. |
+| `SQLITE_DB_PATH` | Database | `./nyayamitra.db` | File path for zero-dependency local SQLite database. |
+| `REDIS_URL` | Cache | Upstash Redis | Connection string for distributed caching and rate-limiting. Degrades gracefully to in-memory TTL dictionary. |
+| `CACHE_TTL_SECONDS` | Cache | `3600` | Default expiration period (in seconds) for cached search results and statutory queries. |
+| `LLM_PROVIDER` | GenAI | `gemini` | Primary AI provider: `gemini`, `groq`, or deterministic baseline fallback. |
+| `PRIMARY_MODEL` | GenAI | `gemini-2.0-flash` | Main model used for intake classification and rights synthesis. |
+| `FALLBACK_MODEL` | GenAI | `llama3-70b-8192` | Automatic Groq fallback model engaged if Gemini quotas are exhausted. |
+| `FAST_MODEL` | GenAI | `gemini-2.0-flash-lite` | Ultra low-latency tier for preliminary intent classification (< 200ms). |
+| `GEMINI_API_KEY` | GenAI | `AQ.Ab8...` | Google AI Studio authentication key for Gemini 2.0 Flash / Pro models. |
+| `GROQ_API_KEY` | GenAI | `gsk_r0...` | Groq Cloud authentication key for high-throughput Llama 3 70B inference. |
+| `EMBEDDING_PROVIDER` | Retrieval | `mock` | Embedding engine for statutory retrieval (`mock`, `fastembed`, or `huggingface`). |
+| `EMBEDDING_MODEL` | Retrieval | `sentence-transformers/all-MiniLM-L6-v2` | Embedding model identifier for vector indexing. |
+| `STORAGE_DRIVER` | Storage | `local` | Storage driver for uploaded citizen files (`local`, `s3`). |
+| `UPLOAD_DIR` | Storage | `./uploads` | Destination directory for incoming document uploads. |
+| `MAX_UPLOAD_SIZE_MB` | Storage | `10` | Hard cap on uploaded notice and agreement file size (in MB). |
+| `FILE_RETENTION_HOURS` | Storage | `24` | Automated retention TTL; uploaded documents are permanently purged after this window. |
+| `INDIA_CODE_BASE_URL` | Source | `https://www.indiacode.nic.in` | Official repository endpoint for Union of India central acts. |
+| `ECOURTS_PORTAL_URL` | Source | `https://services.ecourts.gov.in` | Official portal for CNR lookup and case status tracking. |
+| `NALSA_PORTAL_URL` | Source | `https://nalsa.gov.in` | National Legal Services Authority directory for free legal representation under Sec 12 LSAA. |
+| `TELE_LAW_URL` | Source | `https://www.tele-law.in` | Department of Justice Tele-Law consultation portal. |
+| `NEXT_PUBLIC_API_BASE_URL`| Frontend | `http://localhost:8000/api/v1` | Public API endpoint. In production, fails closed with a clear error if unset. |
+| `NEXT_PUBLIC_APP_NAME` | Frontend | `NyayaMitra` | Display name used in UI banners, page headers, and meta tags. |
 | `RATE_LIMIT_PER_MINUTE` | No | `60` | Anti-abuse rate limit per IP address. |
 
 ---
@@ -288,6 +310,17 @@ NyayaMitra requires zero obscure configuration. The following variables can be a
 - **Section 12 LSAA 1987 Calculator:** Determines if the citizen is entitled to a 100% free advocate at state expense (women, children, SC/ST, custody, disabled, or low-income).
 - **Official DLSA Directory:** Direct phone numbers, physical court complex addresses, and map links for District Legal Services Authorities across Indian states.
 - **Tele-Law Integration:** Direct guidance to access pre-litigation video advice via Common Service Centres (CSCs).
+
+### 6. Compare Documents (दस्तावेज़ तुलना — `/compare`)
+- **Side-by-Side Clause Alignment:** Paste or upload two versions of agreements, rental contracts, court notices, or amendments.
+- **Structural & Semantic Delta Engine:** Automatically tallies Added, Removed, Modified, and Unchanged clauses.
+- **Risk Shift Analysis:** Highlights increased penalties, extended notice windows, or altered obligations grounded in current Indian enactments.
+- **Accessible Output:** Color-coded diff badges with `aria-live="polite"` dynamic announcement for screen readers.
+
+### 7. Document Outline Navigator (दस्तावेज़ नेविगेटर — `/navigate`)
+- **Hierarchical Section Tree:** Automatically detects Section, Sub-section, and Chapter boundaries across uploaded legal documents.
+- **Sticky Jump Bookmarks:** One-click navigation that jumps directly to the target clause with character-range highlights.
+- **Statutory Milestone Tracking:** Extracts compliance obligations, key definitions, and dispute forum requirements into an accessible overview panel.
 
 ---
 
