@@ -160,7 +160,11 @@ export async function sendIntakeTurn(
     const errorBody = await res.text();
     throw new Error(`Intake service error (${res.status}): ${errorBody}`);
   }
-  return res.json();
+  const data = await res.json();
+  return {
+    ...data,
+    bot_response: data.bot_response || data.message || data.response || "",
+  };
 }
 
 /**

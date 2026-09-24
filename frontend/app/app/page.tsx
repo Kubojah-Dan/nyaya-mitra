@@ -154,9 +154,24 @@ function AppDashboardInner() {
       const res: IntakeTurnResponse = await sendIntakeTurn(sessionId, text);
       setDetectedDomain(res.domain);
       setIsUrgent(res.is_urgent);
+
+      let botText = res.bot_response || (res as unknown as { message?: string }).message || (res as unknown as { response?: string }).response || "";
+      if (!botText) {
+        botText =
+          lang === "hi"
+            ? `मैंने आपकी समस्या (${res.domain || "कानूनी"}) को समझ लिया है।`
+            : `I have analyzed your problem under ${res.domain || "Indian"} law.`;
+      }
+      if (res.next_questions && res.next_questions.length > 0) {
+        const qJoined = res.next_questions.join("\n");
+        if (!botText.includes(res.next_questions[0])) {
+          botText = `${botText}\n\n${qJoined}`;
+        }
+      }
+
       setIntakeMessages((prev) => [
         ...prev,
-        { sender: "assistant", text: res.bot_response, domain: res.domain, urgent: res.is_urgent },
+        { sender: "assistant", text: botText, domain: res.domain, urgent: res.is_urgent },
       ]);
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : "Failed to connect to NyayaMitra backend.";
@@ -489,7 +504,11 @@ function AppDashboardInner() {
 
           <div className="nm-chat-container" role="log" aria-live="polite" aria-label="Legal conversation">
             {intakeMessages.map((msg, idx) => (
-              <div key={idx} className={`nm-chat-bubble ${msg.sender === "assistant" ? "nm-chat-assistant" : "nm-chat-user"}`}>
+              <div
+                key={idx}
+                className={`nm-chat-bubble ${msg.sender === "assistant" ? "nm-chat-assistant" : "nm-chat-user"}`}
+                style={{ whiteSpace: "pre-wrap" }}
+              >
                 {msg.text}
               </div>
             ))}

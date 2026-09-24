@@ -415,13 +415,17 @@ class GuidedIntakeEngine:
     ) -> dict[str, Any]:
         return {
             "message": message,
+            "bot_response": message,
+            "session_id": self.state.session_id,
             "stage": stage or self.state.stage.value,
             "domain": self.state.domain,
             "domain_confidence": self.state.domain_confidence,
             "collected_facts": dict(self.state.collected_facts),
             "pending_questions": questions,
+            "next_questions": questions,
             "is_urgent": urgent,
             "urgency_reason": self.state.urgency_reason,
             "language": self.state.language,
             "confirmed": self.state.confirmed,
+            "can_generate_document": self.state.stage in (IntakeStage.AWAITING_CONFIRMATION, IntakeStage.READY_FOR_ADVICE),
         }

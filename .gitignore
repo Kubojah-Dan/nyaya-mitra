@@ -3,6 +3,8 @@
 .env.local
 .env.*.local
 *.env
+DEMO.md
+samples/
 
 # Dependencies
 node_modules/
