@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-const routes = ["/", "/app", "/compare", "/navigate"];
+const routes = ["/", "/app", "/compare", "/navigate", "/legal-aid", "/cases", "/generator"];
 
 for (const route of routes) {
   test(`has no automatically detectable accessibility violations on ${route}`, async ({ page }) => {
@@ -9,7 +9,7 @@ for (const route of routes) {
     await page.waitForLoadState("load");
 
     const accessibilityScanResults = await new AxeBuilder({ page })
-      .disableRules(["color-contrast"])
+      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
       .analyze();
 
     expect(accessibilityScanResults.violations).toEqual([]);

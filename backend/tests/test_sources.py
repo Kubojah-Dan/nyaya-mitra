@@ -101,3 +101,49 @@ async def test_sources_api_endpoints():
         prov = res.json()
         assert prov["source_code"] == "INDIA_CODE"
         assert prov["tier"] == 1
+
+
+@pytest.mark.asyncio
+async def test_ecourts_adapter_direct_and_error_paths():
+    from app.sources.ecourts import ECourtsAdapter
+    adapter = ECourtsAdapter()
+
+    # Valid CNR
+    valid_res = adapter.parse_and_validate_cnr("DLCT010012342024")
+    assert valid_res["valid"] is True
+    assert valid_res["state_code"] == "DL"
+    assert valid_res["registration_year"] == "2024"
+    assert "https://services.ecourts.gov.in" in valid_res["direct_lookup_url"]
+
+    # Invalid length / structure CNR
+    invalid_res = adapter.parse_and_validate_cnr("SHORT_CNR")
+    assert invalid_res["valid"] is False
+    assert "16 alphanumeric characters" in invalid_res["error"]
+
+    # Guidelines
+    guidelines = adapter.get_navigation_guidelines()
+    assert "cnr_structure" in guidelines
+    assert guidelines["cnr_structure"]["length"] == 16
+    assert "official_portals" in guidelines
+
+    # Fetch latest
+    fetch_res = await adapter.fetch_latest()
+    assert fetch_res["status"] == "SUCCESS"
+    assert "cnr_structure" in fetch_res["data"]
+
+
+@pytest.mark.asyncio
+async def test_tele_law_adapter_and_provenance():
+    from app.sources.tele_law import TeleLawAdapter
+    adapter = TeleLawAdapter()
+
+    fetch_res = await adapter.fetch_latest()
+    assert fetch_res["status"] == "SUCCESS"
+    assert "overview" in fetch_res["data"]
+    assert "100% Free" in fetch_res["data"]["fee_structure"]["section_12_eligible"]
+
+    prov = adapter.get_provenance("tele_law_overview")
+    assert prov["source_code"] == "TELE_LAW"
+    assert prov["tier"] == 1
+    assert "Tele-Law" in prov["source_name"]
+

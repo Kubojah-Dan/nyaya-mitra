@@ -9,11 +9,7 @@ import uuid
 from typing import Any, Optional
 from fastapi import APIRouter, File, Form, HTTPException, Response, UploadFile
 from pydantic import BaseModel, Field
-
-from app.services.deadline_guardian import DeadlineGuardian
-from app.services.document_classifier import DocumentClassifier
-from app.services.ocr_service import DocumentSecurityValidator, OCRService
-from app.services.outline_service import DocumentOutlineResponse, OutlineService
+from app.services.outline_service import DocumentOutlineResponse
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
@@ -75,6 +71,10 @@ async def analyze_document_upload(
     Accepts file upload (PDF, PNG, JPG, TXT) or raw text for complete legal analysis:
     OCR, language detection, document classification, party extraction, and deadline guardian.
     """
+    from app.services.ocr_service import DocumentSecurityValidator, OCRService
+    from app.services.document_classifier import DocumentClassifier
+    from app.services.deadline_guardian import DeadlineGuardian
+
     doc_id = str(uuid.uuid4())
     filename = "document.txt"
     file_bytes = b""
@@ -204,6 +204,8 @@ async def download_calendar_ics(doc_id: str):
             status_code=400, detail="No deadlines found for this document to export."
         )
 
+    from app.services.deadline_guardian import DeadlineGuardian
+
     ics_content = DeadlineGuardian.generate_ics_calendar(
         deadlines=deadlines,
         document_title=doc_data.get("filename", "Legal Document"),
@@ -231,6 +233,8 @@ async def generate_document_outline(payload: DocumentOutlineRequest):
     Generates a structured, hierarchical document section outline from raw text
     or referenced document_id for sticky navigation and screen-reader accessibility.
     """
+    from app.services.outline_service import OutlineService
+
     text = payload.raw_text or ""
     title = payload.title or "Legal Document"
 
