@@ -36,7 +36,7 @@ class IntakeTurnRequest(BaseModel):
 
 
 class RightsRequest(BaseModel):
-    session_id: str
+    session_id: Optional[str] = None
     domain: Optional[str] = None
     language: str = "en"
     trigger_date: Optional[str] = None  # ISO date string, e.g. "2026-09-01"

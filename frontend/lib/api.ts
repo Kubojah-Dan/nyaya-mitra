@@ -190,8 +190,43 @@ export async function fetchRights(
     const errorBody = await res.text();
     throw new Error(`Rights service error (${res.status}): ${errorBody}`);
   }
-  return res.json();
+  const data = await res.json();
+
+  const statutoryRights: StatutoryRightItem[] =
+    Array.isArray(data.statutory_rights) && data.statutory_rights.length > 0
+      ? data.statutory_rights
+      : (data.rights || []).map((r: string, idx: number) => ({
+          right_name: `Statutory Right ${idx + 1}`,
+          statutory_basis: data.citations?.[idx]?.act_name
+            ? `${data.citations[idx].act_name} §${data.citations[idx].section_number}`
+            : "Tier-1 Enactment",
+          tier: "TIER_1_STATUTE",
+          description: r,
+          source_url: data.citations?.[idx]?.official_url || "https://www.indiacode.nic.in",
+        }));
+
+  const actionTimeline: ActionTimelineStep[] =
+    Array.isArray(data.action_timeline) && data.action_timeline.length > 0
+      ? data.action_timeline
+      : (data.deadlines || []).map((d: { label?: string; relative_timeframe?: string; deadline_date?: string; trigger_event?: string; statutory_basis?: string }, idx: number) => ({
+          step_number: idx + 1,
+          title: d.label || `Action Step ${idx + 1}`,
+          timeframe: d.relative_timeframe || d.deadline_date || "As prescribed",
+          action_required: d.trigger_event || "Comply with statutory requirement",
+          authority: d.statutory_basis || undefined,
+        }));
+
+  return {
+    domain: data.domain || domain,
+    language: data.language || language,
+    rights_summary: data.rights_summary || data.summary || "Key statutory rights and timelines under applicable Indian law.",
+    statutory_rights: statutoryRights,
+    action_timeline: actionTimeline,
+    practical_steps: data.practical_steps || data.next_steps || [],
+    escalation_advice: data.escalation_advice || data.escalation_reason,
+  };
 }
+
 
 /**
  * Analyzes uploaded document text or file via OCR and Deadline Guardian.

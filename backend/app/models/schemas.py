@@ -358,17 +358,41 @@ class DeadlineItem(BaseSchema):
     urgency_level: str = "MEDIUM"
 
 
+class StatutoryRightItem(BaseSchema):
+    right_name: str
+    statutory_basis: str
+    tier: str = "TIER_1_STATUTE"
+    description: str
+    source_url: Optional[str] = "https://www.indiacode.nic.in"
+
+
+class ActionTimelineStep(BaseSchema):
+    step_number: int
+    title: str
+    timeframe: str
+    action_required: str
+    authority: Optional[str] = None
+
+
 class RAGResponseContract(BaseSchema):
     """The mandatory structured output contract for legal assistance."""
     summary: str
+    domain: Optional[str] = "GENERAL"
+    language: Optional[str] = "en"
+    rights_summary: Optional[str] = None
     rights: list[str] = Field(default_factory=list)
+    statutory_rights: list[StatutoryRightItem] = Field(default_factory=list)
+    action_timeline: list[ActionTimelineStep] = Field(default_factory=list)
     next_steps: list[str] = Field(default_factory=list)
+    practical_steps: list[str] = Field(default_factory=list)
     deadlines: list[DeadlineItem] = Field(default_factory=list)
     citations: list[CitationItem] = Field(default_factory=list)
     uncertainties: list[str] = Field(default_factory=list)
     escalation_needed: bool = False
     escalation_reason: Optional[str] = None
+    escalation_advice: Optional[str] = None
     disclaimer: str = (
         "NyayaMitra is an AI legal information assistant and not a law firm. "
         "This response is for informational purposes only and does not constitute legal advice."
     )
+
